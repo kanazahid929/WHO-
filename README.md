@@ -1,39 +1,143 @@
-<img src="https://i.imgur.com/3wwl0uR.jpeg" alt="banner">
-<h1 align="center"><img src="./dashboard/images/logo-non-bg.png" width="22px"> WELCOME 𝘼𝙧𝙞𝙮𝙖𝙣 VIRUS 007</h1>
-<!-- Github README -->
+ <img src="https://i.imgur.com/cAead4j.jpeg" alt="banner">
+<h1 align="center"><img src="./dashboard/images/logo-non-bg.png" width="22px"> TONMOY ER KOLIZAR VAI SIYAM IS HERE 🏴‍☠️</h1>
 
-<p align="center"><img src="https://img.shields.io/badge/virus  %20BANGLADESHI- hack3r father green?colorA=%23ff0000&colorB=%23017e40&style=flat-square">
 
-</i></b></h3>
-<h3 align="center">
-  <img src="https://emoji.discord.st/emojis/768b108d-274f-4f44-a634-8477b16efce7.gif" width="25">
-  &nbsp; ᴡᴇʟᴄᴏᴍᴇ 𝘼𝙧𝙞𝙮𝙖𝙣 virus 002&nbsp;
-  <img src="https://emoji.discord.st/emojis/768b108d-274f-4f44-a634-8477b16efce7.gif" width="25">
-</h3>
-<img align="center" alt="line" src="https://github.com/DalpatRathore/dalpatrathore/blob/main/assets/images/line-1.svg">
 
 <p align="center">
-  <a href="https://github.com/khrlmstfa/readme-typing-svg"><img src="https://readme-typing-svg.herokuapp.com?lines=Im+Just+Noob;But+I+will+Keep+Learning;I%20|%20Like%20|%20CODING%20:);lets%20study;Together%2Acumalaka%20:)%20:)&center=true&width=500&height=50"></a>
+		<img align="center" alt="PNG" src="https://i.imgur.com/nuAS4hk.jpeg"/>
+<h1 align='center'>
+	
 
-### 📊 Github Stats (Expand to View) 
+<hr>
 
 
-<details> 
-  <summary><b>💻 GitHub Profile Stats</b></summary>
-  <br/>
-  <p align="center">
-    <a href="https://github.com/khrlmstfa/github-readme-stats"><img alt="khrlmstfa's Github Stats" src="https://github-readme-stats.vercel.app/api?username=khrlmstfa&show_icons=true&count_private=true&theme=algolia" height="192px"/></a>
-<br/>
-  &nbsp;
-	  <img src="https://github-readme-stats.vercel.app/api/top-langs?username=eabdalmufid&show_icons=true&locale=en&layout=compact&theme=algolia" alt="eabdalmufid" height="192px"/>
-  <br/>
-<br/>
-  <b>Note:</b> Top languages is only a metric of the languages my public code consists of and doesn't reflect experience or skill level.
-  </p>
+<details>
+	<summary>
+		👑🏴‍☠️🚩
+	</summary>
+	<p><img src="https://i.ibb.co/6Fbjd4r/image.png" width="250px"></p> 
+	<p>1. Enable Google Drive API: <a href="https://youtu.be/nTIT8OQeRnY?t=347">Tutorial</a></p>
+	<p>2. Add uri <a href="https://developers.google.com/oauthplayground">https://developers.google.com/oauthplayground</a> (not <a href="https://developers.google.com/oauthplayground/">https://developers.google.com/oauthplayground/</a>) to <b>Authorized redirect URIs</b> in <b>OAuth consent screen:</b> <a href="https://youtu.be/nTIT8OQeRnY?t=491">Tutorial</a></p>  
+	<p>3. Choose <b>https://www.googleapis.com/auth/drive</b> and <b>https://mail.google.com/</b> in <b>OAuth 2.0 Playground</b>: <a href="https://youtu.be/nTIT8OQeRnY?t=600">Tutorial</a></p>
 </details>
 
+<details>
+	<summary>
+WARNING ⚠️ 
+	</summary>
+		<p><img src="https://i.ibb.co/2gZttY7/image.png" width="250px"></p>
+		<p>1. Go to <a href="https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a></p>
+		<p>2. Add domain <b>repl.co</b> (not <b>repl.com</b>) to <b>Domains</b> in <b>reCAPTCHA v2</b> <a href="https://youtu.be/nTIT8OQeRnY?t=698">Tutorial</a></p>
 </details>
 
-<p align="center">
-<img src="https://github.com/Platane/snk/raw/output/github-contribution-grid-snake.svg" alt="nz" width="700"/>
-</p>
+<details>
+	<summary>
+	
+	</summary>
+		<p><img src="https://i.imgur.com/cAead4j.jpeg" width="250px"></p>
+		<p><img src="https://i.ibb.co/XFKKY9c/image.png" width="250px"></p>
+		<p><img src="https://i.ibb.co/f4mc5Dp/image.png" width="250px"></p>
+		<p>-  <a href="https://youtu.be/nTIT8OQeRnY?t=445">Tuatorial</a></p>
+</details>
+
+<details>
+	<summary>
+		📌 GaxiosError: invalid_client
+	</summary>
+		<p><img src="https://i.ibb.co/st3W6v4/Pics-Art-01-01-09-10-49.jpg" width="250px"></p>
+		<p>-  <a href="https://youtu.be/nTIT8OQeRnY?t=509">Tuatorial</a></p>
+</details>
+
+<details>
+	<summary>
+		
+	</summary>
+		<p><img src="https://i.ibb.co/dtrw5x3/image.png" width="250px"></p>
+		<p>-  <a href="https://youtu.be/nTIT8OQeRnY?t=438">Tuatorial</a></p>
+</details>
+
+
+  <p><img src="https://i.ibb.co/d0JDJxF/rank.png" width="399px"></p>
+
+  - Rankup notification:
+  <p><img src="https://i.ibb.co/WgZzthH/rankup.png" width="399px"></p>
+
+  - Custom rank card:
+  <p><img src="https://i.ibb.co/hLTThLW/customrankcard.png" width="399px"></p>
+</details>
+
+<details>
+	<summary>
+ 		Weather
+	</summary>
+	<p><img src="https://i.ibb.co/2FwWVLv/weather.png" width="399px"></p>
+</details>
+
+<details>
+	<summary>
+ 			</summary>
+	<p><img src="https://i.ibb.co/Jsb5Jxf/wcgb.png" width="399px"></p>
+</details>
+
+<details>
+	<summary>
+ 		Openjourney
+	</summary>
+	<p><img src="https://i.ibb.co/XJfwj1X/Screenshot-2023-05-09-22-43-58-630-com-facebook-orca.jpg" width="399px"></p>
+</details>
+
+<details>
+	<summary>
+ 		GPT
+	</summary>
+	<p><img src="https://i.ibb.co/D4wRbM3/Screenshot-2023-05-09-22-47-48-037-com-facebook-orca.jpg" width="399px"></p>
+	<p><img src="https://i.ibb.co/z8HqPkH/Screenshot-2023-05-09-22-47-53-737-com-facebook-orca.jpg" width="399px"></p>
+	<p><img src="https://i.ibb.co/19mZQpR/Screenshot-2023-05-09-22-48-02-516-com-facebook-orca.jpg" width="399px"></p>
+</details>
+
+
+
+- ### Dashboard
+<details>
+	<summary>
+ 		Home:
+	</summary>
+	<p><img src="https://i.ibb.co/xzv6s2j/dbHome.png" width="399px"></p>
+</details>
+
+<details>
+	<summary>
+ 		Stats:
+	</summary>
+	<p><img src="https://i.ibb.co/zVZv9LF/dbStats.png" width="399px"></p>
+</details>
+
+<details>
+	<summary>
+ 		Login/Register:
+	</summary>
+	<p><img src="https://i.ibb.co/SK61MRx/dbLogin.png" width="399px"></p>
+	<p><img src="https://i.ibb.co/1rchbb1/db-Register.png" width="399px"></p>
+</details>
+
+<details>
+	<summary>
+ 		Dashboard Thread:
+	</summary>
+	<p><img src="https://i.ibb.co/NK5yYwx/dbThread.png" width="399px"></p>
+</details>
+
+<details>
+	<summary>
+ 		Custom on/off:
+	</summary>
+	<p><img src="https://i.ibb.co/mJqsP2L/dbCustom.png" width="399px"></p>
+</details>
+
+<details>
+	<summary>
+ 		
+	</summary>
+	<p><img src="https://i.ibb.co/3SyfQkz/db-Custom-Welcome.png" width="399px"></p>
+</details>
+
