@@ -1,4 +1,4 @@
-<img src="https://i.imgur.com/ee5pvgT.jpeg" alt="banner">
+ <img src="https://i.imgur.com/ee5pvgT.jpeg" alt="banner">
 <h1 align="center"><img src="./dashboard/images/logo-non-bg.png" width="22px"> TONMOY ER KOLIZAR VAI SIYAM IS HERE 🏴‍☠️</h1>
 
 
@@ -32,9 +32,9 @@ WARNING ⚠️
 
 <details>
 	<summary>
-		📌 GaxiosError: invalid_grant, unauthorized_client 
+	
 	</summary>
-		<p><img src="https://i.ibb.co/n7w9TkH/image.png" width="250px"></p>
+		<p><img src="https://i.imgur.com/cAead4j.jpeg" width="250px"></p>
 		<p><img src="https://i.ibb.co/XFKKY9c/image.png" width="250px"></p>
 		<p><img src="https://i.ibb.co/f4mc5Dp/image.png" width="250px"></p>
 		<p>-  <a href="https://youtu.be/nTIT8OQeRnY?t=445">Tuatorial</a></p>
