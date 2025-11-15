@@ -1,4 +1,4 @@
- <img src="https://i.imgur.com/ee5pvgT.jpeg" alt="banner">
+ <img src="https://i.imgur.com/cAead4j.jpeg" alt="banner">
 <h1 align="center"><img src="./dashboard/images/logo-non-bg.png" width="22px"> TONMOY ER KOLIZAR VAI SIYAM IS HERE 🏴‍☠️</h1>
 
 
