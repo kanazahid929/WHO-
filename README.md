@@ -13,7 +13,7 @@
 
 <details>
 	<summary>
-		📌 Error 400: redirect_uri_mismatch
+		👑🏴‍☠️🚩
 	</summary>
 	<p><img src="https://i.ibb.co/6Fbjd4r/image.png" width="250px"></p> 
 	<p>1. Enable Google Drive API: <a href="https://youtu.be/nTIT8OQeRnY?t=347">Tutorial</a></p>
@@ -23,7 +23,7 @@
 
 <details>
 	<summary>
-		📌 Error for site owners: Invalid domain for site key
+WARNING ⚠️ 
 	</summary>
 		<p><img src="https://i.ibb.co/2gZttY7/image.png" width="250px"></p>
 		<p>1. Go to <a href="https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a></p>
@@ -37,7 +37,7 @@
 		<p><img src="https://i.ibb.co/n7w9TkH/image.png" width="250px"></p>
 		<p><img src="https://i.ibb.co/XFKKY9c/image.png" width="250px"></p>
 		<p><img src="https://i.ibb.co/f4mc5Dp/image.png" width="250px"></p>
-		<p>- If you don't publish the project in google console, the refresh token will expire after 1 week and you need to get it back. <a href="https://youtu.be/nTIT8OQeRnY?t=445">Tuatorial</a></p>
+		<p>-  <a href="https://youtu.be/nTIT8OQeRnY?t=445">Tuatorial</a></p>
 </details>
 
 <details>
@@ -45,29 +45,18 @@
 		📌 GaxiosError: invalid_client
 	</summary>
 		<p><img src="https://i.ibb.co/st3W6v4/Pics-Art-01-01-09-10-49.jpg" width="250px"></p>
-		<p>- Check if you have entered your google project client_id correctly <a href="https://youtu.be/nTIT8OQeRnY?t=509">Tuatorial</a></p>
+		<p>-  <a href="https://youtu.be/nTIT8OQeRnY?t=509">Tuatorial</a></p>
 </details>
 
 <details>
 	<summary>
-		📌 Error 403: access_denied
+		
 	</summary>
 		<p><img src="https://i.ibb.co/dtrw5x3/image.png" width="250px"></p>
-		<p>- If you don't publish the project in google console only the approved accounts added to the project can use it <a href="https://youtu.be/nTIT8OQeRnY?t=438">Tuatorial</a></p>
+		<p>-  <a href="https://youtu.be/nTIT8OQeRnY?t=438">Tuatorial</a></p>
 </details>
 
-## ❌ **DO NOT USE THE ORIGINAL UNDERGRADUATE VERSION**
-- The use of unknown source code can lead to the device being infected with viruses, malware, hacked social accounts, banks, ...
-- Goat-Bot-V2 is only published at https://github.com/ntkhang03/Goat-Bot-V2, all other sources, all forks from other github, replit,... are fake, violate policy
-- If you use from other sources (whether accidentally or intentionally) it means that you are in violation and will be banned without notice
-## 📸 **Screenshots**
-- ### Bot
-<details>
-	<summary>
- 		Rank system
-	</summary>
 
-  - Rank card:
   <p><img src="https://i.ibb.co/d0JDJxF/rank.png" width="399px"></p>
 
   - Rankup notification:
@@ -86,8 +75,7 @@
 
 <details>
 	<summary>
- 		Auto send notification when have user join or leave box chat (you can custom message)
-	</summary>
+ 			</summary>
 	<p><img src="https://i.ibb.co/Jsb5Jxf/wcgb.png" width="399px"></p>
 </details>
 
@@ -148,29 +136,8 @@
 
 <details>
 	<summary>
- 		Custom welcome message (similar with leave, rankup (coming soon), custom command (coming soon))
+ 		
 	</summary>
 	<p><img src="https://i.ibb.co/3SyfQkz/db-Custom-Welcome.png" width="399px"></p>
 </details>
-
-## ✨ **Copyright (C)**
-- **[NTKhang (NTKhang03)](https://github.com/ntkhang03)**
-
-## 📜 **License**
-
-**VIETNAMESE**
-
-- ***Nếu bạn vi phạm bất kỳ quy tắc nào, bạn sẽ bị cấm sử dụng dự án của tôi***
-- Không bán mã nguồn của tôi
-- Không tự xưng là chủ sở hữu của mã nguồn của tôi
-- Không kiếm tiền từ mã nguồn của tôi (chẳng hạn như: mua bán lệnh, mua bán/cho thuê bot, kêu gọi quyên góp, v.v.)
-- Không xóa/sửa đổi credit (tên tác giả) trong mã nguồn của tôi
-
-**ENGLISH**
-
-- ***If you violate any rules, you will be banned from using my project***
-- Don't sell my source code
-- Don't claim my source code as your own
-- Do not monetize my source code (such as: buy and sell commands, buy and sell bots, call for donations, etc.)
-- Don't remove/edit my credits (author name) in my source code
 
