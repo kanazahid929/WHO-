@@ -10,53 +10,48 @@ module.exports = {
     config: {
         name: "welcome",
         version: "2.1",
-        author: "𝐌𝐃 𝐒𝐈𝐘𝐀𝐌 𝐎𝐅𝐅𝐈𝐂𝐈𝐀𝐋",
+        author: "MD SIYAM OFFICIAL",
         category: "events"
     },
 
-    langs: {
-        en: {
+    langs: {  
+        en: {  
             session1: "morning",
             session2: "noon",
             session3: "afternoon",
             session4: "evening",
-            welcomeMessage: "🧸চলে এসেছি ⚡🧸আমি নায়ক মিলন তোমাদের মাঝে 👀📌\nWelcome to my group ⚡",
+            welcomeMessage: "🧸 চলে এসেছি ⚡🧸 আমি নায়ক মিলন তোমাদের মাঝে 👀📌\nWelcome to my group ⚡",
             multiple1: "you",
             multiple2: "you guys",
-            defaultWelcomeMessage: `সিয়াম ভাইয়ের পক্ষ থেকে {userName}.\nWelcome {multiple} to the chat group: {boxName}\nHave a nice {session} 😊\n— 𝐌𝐃 𝐒𝐈𝐘𝐀𝐌 𝐎𝐅𝐅𝐈𝐂𝐈𝐀𝐋`
+            defaultWelcomeMessage: `সিয়াম ভাইয়ের পক্ষ থেকে {userName}.\nWelcome {multiple} to {boxName}\nHave a nice {session} 😊`
         }
     },
 
-    onStart: async ({ threadsData, message, event, api, getLang }) => {
+    onStart: async ({ threadsData, message, event, api, getLang }) => {  
         if (event.logMessageType !== "log:subscribe") return;
 
-        return async function () {
+        return async function () {  
             const hours = getTime("HH");
             const { threadID } = event;
             const prefix = global.utils.getPrefix(threadID);
-            const dataAdded = event.logMessageData.addedParticipants;
+            const added = event.logMessageData.addedParticipants;
 
-            // ---------- AUTO NICKNAME SET ----------
-            for (const user of dataAdded) {
-                if (user.userFbId != api.getCurrentUserID()) {
-                    api.changeNickname(
-                        "『🐐 SIYAM BOT OFFICIAL 🐐』",
-                        threadID,
-                        user.userFbId,
-                        () => {}
-                    );
-                }
-            }
+            // >>>>>>>>>>> Bot Joined <<<<<<<<<<
+            if (added.some(p => p.userFbId == api.getCurrentUserID())) {
 
-            // ---------- BOT JOINED ----------
-            if (dataAdded.some(i => i.userFbId == api.getCurrentUserID())) {
+                // >>> Bot nickname set করা <<<
+                const botName = "🧸 MD SIYAM BOT ⚡";
+                try {
+                    await api.changeNickname(botName, threadID, api.getCurrentUserID());
+                } catch (err) {}
 
+                // video download
                 const videoPath = path.join(__dirname, "welcome.mp4");
                 const url = "https://files.catbox.moe/yx8c5i.mp4";
 
                 if (!fs.existsSync(videoPath)) {
-                    const video = await axios.get(url, { responseType: "arraybuffer" });
-                    fs.writeFileSync(videoPath, video.data);
+                    const file = await axios.get(url, { responseType: "arraybuffer" });
+                    fs.writeFileSync(videoPath, file.data);
                 }
 
                 return message.send({
@@ -65,59 +60,55 @@ module.exports = {
                 });
             }
 
-            // ---------- USERS JOINED ----------
+            // >>>>>>>>>>> User Joined <<<<<<<<<<
+
             if (!global.temp.welcomeEvent[threadID])
                 global.temp.welcomeEvent[threadID] = { joinTimeout: null, dataAddedParticipants: [] };
 
-            global.temp.welcomeEvent[threadID].dataAddedParticipants.push(...dataAdded);
+            global.temp.welcomeEvent[threadID].dataAddedParticipants.push(...added);
             clearTimeout(global.temp.welcomeEvent[threadID].joinTimeout);
 
             global.temp.welcomeEvent[threadID].joinTimeout = setTimeout(async () => {
 
-                const threadData = await threadsData.get(threadID);
-                if (threadData.settings.sendWelcomeMessage === false) return;
+                const threadInfo = await threadsData.get(threadID);
+                if (threadInfo.settings.sendWelcomeMessage === false) return;
 
-                const addedUsers = global.temp.welcomeEvent[threadID].dataAddedParticipants;
-                const banned = threadData.data.banned_ban || [];
+                const newUsers = global.temp.welcomeEvent[threadID].dataAddedParticipants;
+                const banned = threadInfo.data.banned_ban || [];
 
                 const names = [];
                 const mentions = [];
 
-                for (const user of addedUsers) {
-                    if (banned.some(b => b.id == user.userFbId)) continue;
-                    names.push(user.fullName);
-                    mentions.push({ tag: user.fullName, id: user.userFbId });
+                for (const u of newUsers) {
+                    if (banned.some(b => b.id == u.userFbId)) continue;
+                    names.push(u.fullName);
+                    mentions.push({ tag: u.fullName, id: u.userFbId });
                 }
 
                 if (names.length === 0) return;
 
-                let welcomeMessage = threadData.data.welcomeMessage || getLang("defaultWelcomeMessage");
+                let welcomeMsg = threadInfo.data.welcomeMessage || getLang("defaultWelcomeMessage");
+                const multi = names.length > 1;
 
-                const multiple = names.length > 1;
-                const threadName = threadData.threadName;
-
-                welcomeMessage = welcomeMessage
+                welcomeMsg = welcomeMsg
                     .replace(/\{userName\}/g, names.join(", "))
-                    .replace(/\{boxName\}|\{threadName\}/g, threadName)
-                    .replace(/\{multiple\}/g, multiple ? getLang("multiple2") : getLang("multiple1"))
+                    .replace(/\{boxName\}|\{threadName\}/g, threadInfo.threadName)
+                    .replace(/\{multiple\}/g, multi ? getLang("multiple2") : getLang("multiple1"))
                     .replace(/\{session\}/g,
                         hours <= 10 ? getLang("session1")
                         : hours <= 12 ? getLang("session2")
                         : hours <= 18 ? getLang("session3")
-                        : getLang("session4")
-                    );
+                        : getLang("session4"));
 
-                const form = {
-                    body: welcomeMessage,
-                    mentions: mentions
-                };
+                const form = { body: welcomeMsg, mentions };
 
+                // default video
                 const videoPath = path.join(__dirname, "welcome.mp4");
                 const url = "https://files.catbox.moe/yx8c5i.mp4";
 
                 if (!fs.existsSync(videoPath)) {
-                    const video = await axios.get(url, { responseType: "arraybuffer" });
-                    fs.writeFileSync(videoPath, video.data);
+                    const file = await axios.get(url, { responseType: "arraybuffer" });
+                    fs.writeFileSync(videoPath, file.data);
                 }
 
                 form.attachment = fs.createReadStream(videoPath);
