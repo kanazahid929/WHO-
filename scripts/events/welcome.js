@@ -9,40 +9,51 @@ if (!global.temp.welcomeEvent)
 module.exports = {
     config: {
         name: "welcome",
-        version: "2.0-fixed",
-        author: "NTKhang + Fixed by ChatGPT",
+        version: "2.1",
+        author: "𝐌𝐃 𝐒𝐈𝐘𝐀𝐌 𝐎𝐅𝐅𝐈𝐂𝐈𝐀𝐋",
         category: "events"
     },
 
-    langs: {  
-        en: {  
+    langs: {
+        en: {
             session1: "morning",
             session2: "noon",
             session3: "afternoon",
             session4: "evening",
-            welcomeMessage: "🧸চলে এসেছি1 ⚡🧸আমি নায়ক মিলন তোমাদের মাঝে 👀📌\nWelcome to my group ⚡",
+            welcomeMessage: "🧸চলে এসেছি ⚡🧸আমি নায়ক মিলন তোমাদের মাঝে 👀📌\nWelcome to my group ⚡",
             multiple1: "you",
             multiple2: "you guys",
-            defaultWelcomeMessage: `সিয়াম ভাইয়ের পক্ষ থেকে {userName}.\nWelcome {multiple} to the chat group: {boxName}\nHave a nice {session} 😊`
+            defaultWelcomeMessage: `সিয়াম ভাইয়ের পক্ষ থেকে {userName}.\nWelcome {multiple} to the chat group: {boxName}\nHave a nice {session} 😊\n— 𝐌𝐃 𝐒𝐈𝐘𝐀𝐌 𝐎𝐅𝐅𝐈𝐂𝐈𝐀𝐋`
         }
     },
 
-    onStart: async ({ threadsData, message, event, api, getLang }) => {  
+    onStart: async ({ threadsData, message, event, api, getLang }) => {
         if (event.logMessageType !== "log:subscribe") return;
 
-        return async function () {  
-            const hours = getTime("HH");  
-            const { threadID } = event;  
+        return async function () {
+            const hours = getTime("HH");
+            const { threadID } = event;
             const prefix = global.utils.getPrefix(threadID);
             const dataAdded = event.logMessageData.addedParticipants;
 
-            // ------------ Bot Joined ------------
+            // ---------- AUTO NICKNAME SET ----------
+            for (const user of dataAdded) {
+                if (user.userFbId != api.getCurrentUserID()) {
+                    api.changeNickname(
+                        "『🐐 SIYAM BOT OFFICIAL 🐐』",
+                        threadID,
+                        user.userFbId,
+                        () => {}
+                    );
+                }
+            }
+
+            // ---------- BOT JOINED ----------
             if (dataAdded.some(i => i.userFbId == api.getCurrentUserID())) {
 
                 const videoPath = path.join(__dirname, "welcome.mp4");
                 const url = "https://files.catbox.moe/yx8c5i.mp4";
 
-                // Download video if not exists
                 if (!fs.existsSync(videoPath)) {
                     const video = await axios.get(url, { responseType: "arraybuffer" });
                     fs.writeFileSync(videoPath, video.data);
@@ -54,7 +65,7 @@ module.exports = {
                 });
             }
 
-            // ------------ Users Joined ------------
+            // ---------- USERS JOINED ----------
             if (!global.temp.welcomeEvent[threadID])
                 global.temp.welcomeEvent[threadID] = { joinTimeout: null, dataAddedParticipants: [] };
 
@@ -85,7 +96,6 @@ module.exports = {
                 const multiple = names.length > 1;
                 const threadName = threadData.threadName;
 
-                // Replace variables
                 welcomeMessage = welcomeMessage
                     .replace(/\{userName\}/g, names.join(", "))
                     .replace(/\{boxName\}|\{threadName\}/g, threadName)
@@ -102,11 +112,9 @@ module.exports = {
                     mentions: mentions
                 };
 
-                // Default video attachment
                 const videoPath = path.join(__dirname, "welcome.mp4");
                 const url = "https://files.catbox.moe/yx8c5i.mp4";
 
-                // Make sure file exists
                 if (!fs.existsSync(videoPath)) {
                     const video = await axios.get(url, { responseType: "arraybuffer" });
                     fs.writeFileSync(videoPath, video.data);
