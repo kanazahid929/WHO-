@@ -1,4 +1,7 @@
 const { getTime, drive } = global.utils;
+const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
 
 if (!global.temp.welcomeEvent)
     global.temp.welcomeEvent = {};
@@ -6,140 +9,115 @@ if (!global.temp.welcomeEvent)
 module.exports = {
     config: {
         name: "welcome",
-        version: "1.7",
-        author: "NTKhang11 (Fixed by ChatGPT)",
+        version: "2.0-fixed",
+        author: "NTKhang + Fixed by ChatGPT",
         category: "events"
     },
 
-    langs: {
-        vi: {
-            session1: "sáng",
-            session2: "trưa",
-            session3: "chiều",
-            session4: "tối",
-            welcomeMessage: "Cảm ơn bạn đã mời tôi vào nhóm!\nPrefix bot: %1\nĐể xem danh sách lệnh hãy nhập: %1help",
-            multiple1: "bạn",
-            multiple2: "các bạn",
-            defaultWelcomeMessage: "Xin chào {userName}.\nChào mừng bạn đến với {boxName}.\nChúc bạn có buổi {session} vui vẻ!"
-        },
-        en: {
+    langs: {  
+        en: {  
             session1: "morning",
             session2: "noon",
             session3: "afternoon",
             session4: "evening",
-            welcomeMessage:
-                "╭────────────◊\n\n🧸চলে এসেছি1 ⚡🧸আমি নায়ক মিলন তোমাদের মাঝে 👀📌🕸️\nকেমন আছো প্রিয় 𝘼͜͡𝘾͜͡𝙎🚩 WORLD 🕸️ ==𝗦𝗢𝗠𝗘𝗧𝗛𝗜𝗡𝗚 𝗘𝗟𝗦E\n\n যেকোনো প্রয়োজনে আমার বস সিয়াম ভাইকে নক দিতে পারেন ধন্যবাদ ❤️‍🩹 ⚡ ⚠️\n\n\n📌👀🕸️╰─────────",
+            welcomeMessage: "🧸চলে এসেছি1 ⚡🧸আমি নায়ক মিলন তোমাদের মাঝে 👀📌\nWelcome to my group ⚡",
             multiple1: "you",
             multiple2: "you guys",
-            defaultWelcomeMessage:
-                `সিয়াম ভায়ের পক্ষ থেকে1 🧸⚡ 👀📌 {userName}.\nWelcome {multiple} to the chat group: {boxName}\nHave a nice {session} 😊`
+            defaultWelcomeMessage: `সিয়াম ভাইয়ের পক্ষ থেকে {userName}.\nWelcome {multiple} to the chat group: {boxName}\nHave a nice {session} 😊`
         }
     },
 
-    onStart: async ({ threadsData, message, event, api, getLang }) => {
-
-        // ❗ GoATBOT v2 FIX — return async function() removed
+    onStart: async ({ threadsData, message, event, api, getLang }) => {  
         if (event.logMessageType !== "log:subscribe") return;
 
-        const hours = getTime("HH");
-        const { threadID } = event;
-        const { nickNameBot } = global.GoatBot.config;
-        const prefix = global.utils.getPrefix(threadID);
-        const dataAddedParticipants = event.logMessageData.addedParticipants;
+        return async function () {  
+            const hours = getTime("HH");  
+            const { threadID } = event;  
+            const prefix = global.utils.getPrefix(threadID);
+            const dataAdded = event.logMessageData.addedParticipants;
 
-        // 🟢 Bot added to group
-        if (dataAddedParticipants.some(item => item.userFbId == api.getCurrentUserID())) {
+            // ------------ Bot Joined ------------
+            if (dataAdded.some(i => i.userFbId == api.getCurrentUserID())) {
 
-            if (nickNameBot)
-                api.changeNickname(nickNameBot, threadID, api.getCurrentUserID());
+                const videoPath = path.join(__dirname, "welcome.mp4");
+                const url = "https://files.catbox.moe/yx8c5i.mp4";
 
-            return message.send({
-                body: getLang("welcomeMessage", prefix),
-                attachment: await global.utils.getStreamFromUrl(
-                    "https://files.catbox.moe/yx8c5i.mp4",
-                    { headers: { "User-Agent": "Mozilla/5.0 (GoatBot Welcome Module)" } }
-                )
-            });
-        }
+                // Download video if not exists
+                if (!fs.existsSync(videoPath)) {
+                    const video = await axios.get(url, { responseType: "arraybuffer" });
+                    fs.writeFileSync(videoPath, video.data);
+                }
 
-        // 🟢 Multiple join handling buffer
-        if (!global.temp.welcomeEvent[threadID])
-            global.temp.welcomeEvent[threadID] = {
-                joinTimeout: null,
-                dataAddedParticipants: []
-            };
-
-        global.temp.welcomeEvent[threadID].dataAddedParticipants.push(...dataAddedParticipants);
-        clearTimeout(global.temp.welcomeEvent[threadID].joinTimeout);
-
-        global.temp.welcomeEvent[threadID].joinTimeout = setTimeout(async function () {
-            const threadData = await threadsData.get(threadID);
-
-            if (threadData.settings.sendWelcomeMessage == false)
-                return;
-
-            const dataAddedParticipants = global.temp.welcomeEvent[threadID].dataAddedParticipants;
-            const dataBanned = threadData.data.banned_ban || [];
-            const threadName = threadData.threadName;
-
-            const userName = [], mentions = [];
-            let multiple = dataAddedParticipants.length > 1;
-
-            for (const user of dataAddedParticipants) {
-                if (dataBanned.some(item => item.id == user.userFbId))
-                    continue;
-
-                userName.push(user.fullName);
-                mentions.push({ tag: user.fullName, id: user.userFbId });
+                return message.send({
+                    body: getLang("welcomeMessage", prefix),
+                    attachment: fs.createReadStream(videoPath)
+                });
             }
 
-            if (userName.length === 0) return;
+            // ------------ Users Joined ------------
+            if (!global.temp.welcomeEvent[threadID])
+                global.temp.welcomeEvent[threadID] = { joinTimeout: null, dataAddedParticipants: [] };
 
-            // 🟢 Welcome message text
-            let { welcomeMessage = getLang("defaultWelcomeMessage") } = threadData.data;
+            global.temp.welcomeEvent[threadID].dataAddedParticipants.push(...dataAdded);
+            clearTimeout(global.temp.welcomeEvent[threadID].joinTimeout);
 
-            const form = {
-                mentions: welcomeMessage.match(/\{userNameTag\}/g) ? mentions : null
-            };
+            global.temp.welcomeEvent[threadID].joinTimeout = setTimeout(async () => {
 
-            welcomeMessage = welcomeMessage
-                .replace(/\{userName\}|\{userNameTag\}/g, userName.join(", "))
-                .replace(/\{boxName\}|\{threadName\}/g, threadName)
-                .replace(/\{multiple\}/g, multiple ? getLang("multiple2") : getLang("multiple1"))
-                .replace(/\{session\}/g,
-                    hours <= 10
-                        ? getLang("session1")
-                        : hours <= 12
-                            ? getLang("session2")
-                            : hours <= 18
-                                ? getLang("session3")
-                                : getLang("session4")
-                );
+                const threadData = await threadsData.get(threadID);
+                if (threadData.settings.sendWelcomeMessage === false) return;
 
-            form.body = welcomeMessage;
+                const addedUsers = global.temp.welcomeEvent[threadID].dataAddedParticipants;
+                const banned = threadData.data.banned_ban || [];
 
-            // 🟢 Check custom attachments first
-            if (threadData.data.welcomeAttachment) {
-                const files = threadData.data.welcomeAttachment;
-                const attachments = files.reduce((acc, file) => {
-                    acc.push(drive.getFile(file, "stream"));
-                    return acc;
-                }, []);
+                const names = [];
+                const mentions = [];
 
-                form.attachment = (await Promise.allSettled(attachments))
-                    .filter(({ status }) => status === "fulfilled")
-                    .map(({ value }) => value);
-            } else {
-                // Default video
-                form.attachment = await global.utils.getStreamFromUrl(
-                    "https://files.catbox.moe/yx8c5i.mp4",
-                    { headers: { "User-Agent": "Mozilla/5.0 (GoatBot Welcome Module)" } }
-                );
-            }
+                for (const user of addedUsers) {
+                    if (banned.some(b => b.id == user.userFbId)) continue;
+                    names.push(user.fullName);
+                    mentions.push({ tag: user.fullName, id: user.userFbId });
+                }
 
-            message.send(form);
-            delete global.temp.welcomeEvent[threadID];
+                if (names.length === 0) return;
 
-        }, 1500);
+                let welcomeMessage = threadData.data.welcomeMessage || getLang("defaultWelcomeMessage");
+
+                const multiple = names.length > 1;
+                const threadName = threadData.threadName;
+
+                // Replace variables
+                welcomeMessage = welcomeMessage
+                    .replace(/\{userName\}/g, names.join(", "))
+                    .replace(/\{boxName\}|\{threadName\}/g, threadName)
+                    .replace(/\{multiple\}/g, multiple ? getLang("multiple2") : getLang("multiple1"))
+                    .replace(/\{session\}/g,
+                        hours <= 10 ? getLang("session1")
+                        : hours <= 12 ? getLang("session2")
+                        : hours <= 18 ? getLang("session3")
+                        : getLang("session4")
+                    );
+
+                const form = {
+                    body: welcomeMessage,
+                    mentions: mentions
+                };
+
+                // Default video attachment
+                const videoPath = path.join(__dirname, "welcome.mp4");
+                const url = "https://files.catbox.moe/yx8c5i.mp4";
+
+                // Make sure file exists
+                if (!fs.existsSync(videoPath)) {
+                    const video = await axios.get(url, { responseType: "arraybuffer" });
+                    fs.writeFileSync(videoPath, video.data);
+                }
+
+                form.attachment = fs.createReadStream(videoPath);
+
+                message.send(form);
+                delete global.temp.welcomeEvent[threadID];
+
+            }, 1500);
+        };
     }
 };
