@@ -23,7 +23,7 @@ module.exports = {
             welcomeMessage: "🧸 চলে এসেছি ⚡🧸 আমি নায়ক মিলন তোমাদের মাঝে 👀📌\nWelcome to my group ⚡",
             multiple1: "you",
             multiple2: "you guys",
-            defaultWelcomeMessage: `সিয়াম ভাইয়ের পক্ষ থেকে {userName}.\nWelcome {multiple} to {boxName}\nHave a nice {session} 😊`
+            defaultWelcomeMessage: `🫧🫧👀 {userName} আসসালামুয়ালাইকুম 💚👑\n\nআপনাকে স্বাগতম 🏴‍☠️☄️\n {multiple} আমাদের {boxName} গ্রুপে 💢👑🌪️\n\n👑গ্রুপে সবার সাথে মিলেমিশে☄️ থাকবেন এবং যে কোন প্রয়োজনে আমার বস সিয়াম ভাই কে নক করতে পারেন 💖⚡💢\n\n\n\n𝘽𝙊𝙏 𝘾𝙍𝙀𝘼𝙏𝙊𝙍 : 𝘾𝙀𝙊⚠️🏴‍☠️ 𝙎𝙄𝙔𝘼𝙈 👀⚠️👑`
         }
     },
 
@@ -36,11 +36,11 @@ module.exports = {
             const prefix = global.utils.getPrefix(threadID);
             const added = event.logMessageData.addedParticipants;
 
-            // >>>>>>>>>>> Bot Joined <<<<<<<<<<
+            // >>>>>>>>>>> Bot Joined virus siyam <<<<<<<<<<
             if (added.some(p => p.userFbId == api.getCurrentUserID())) {
 
-                // >>> Bot nickname set করা <<<
-                const botName = "🧸 MD SIYAM BOT ⚡";
+                // >>> Nic -siyam <<<
+                const botName = "𝗘͜͡𝗥𝗢𝗢𝗥 🍷🌪️📨";
                 try {
                     await api.changeNickname(botName, threadID, api.getCurrentUserID());
                 } catch (err) {}
