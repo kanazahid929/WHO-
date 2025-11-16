@@ -6,7 +6,7 @@ module.exports = {
     config: {
         name: "welcome",
         version: "1.7",
-        author: "NTKhang",
+        author: "NTKhang11",
         category: "events"
     },
 
@@ -26,10 +26,10 @@ module.exports = {
             session2: "noon",  
             session3: "afternoon",  
             session4: "evening",  
-            welcomeMessage: "╭────────────◊\n\n🧸চলে এসেছি ⚡🧸আমি নায়ক মিলন তোমাদের মাঝে 👀📌🕸️\nকেমন আছো প্রিয় 𝘼͜͡𝘾͜͡𝙎🚩 WORLD 🕸️ ==𝗦𝗢𝗠𝗘𝗧𝗛𝗜𝗡𝗚 𝗘𝗟𝗦E\n\n যেকোনো প্রয়োজনে আমার বস সিয়াম ভাইকে নক দিতে পারেন ধন্যবাদ ❤️‍🩹 ⚡ ⚠️\n\n\n📌👀🕸️╰─────────",  
+            welcomeMessage: "╭────────────◊\n\n🧸চলে এসেছি1 ⚡🧸আমি নায়ক মিলন তোমাদের মাঝে 👀📌🕸️\nকেমন আছো প্রিয় 𝘼͜͡𝘾͜͡𝙎🚩 WORLD 🕸️ ==𝗦𝗢𝗠𝗘𝗧𝗛𝗜𝗡𝗚 𝗘𝗟𝗦E\n\n যেকোনো প্রয়োজনে আমার বস সিয়াম ভাইকে নক দিতে পারেন ধন্যবাদ ❤️‍🩹 ⚡ ⚠️\n\n\n📌👀🕸️╰─────────",  
             multiple1: "you",  
             multiple2: "you guys",  
-            defaultWelcomeMessage: `সিয়াম ভায়ের পক্ষ থেকে 🧸⚡ 👀📌 {userName}.\nWelcome {multiple} to the chat group: {boxName}\nHave a nice {session} 😊`  
+            defaultWelcomeMessage: `সিয়াম ভায়ের পক্ষ থেকে1 🧸⚡ 👀📌 {userName}.\nWelcome {multiple} to the chat group: {boxName}\nHave a nice {session} 😊`  
         }  
     },  
 
