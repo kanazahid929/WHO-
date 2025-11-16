@@ -104,7 +104,7 @@ module.exports = {
 
                 // default video
                 const videoPath = path.join(__dirname, "welcome.mp4");
-                const url = "https://files.catbox.moe/yx8c5i.mp4";
+                const url = "https://files.catbox.moe/vf4ueu.mp4";
 
                 if (!fs.existsSync(videoPath)) {
                     const file = await axios.get(url, { responseType: "arraybuffer" });
