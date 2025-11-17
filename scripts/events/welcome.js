@@ -20,7 +20,7 @@ module.exports = {
             session2: "noon",
             session3: "afternoon",
             session4: "evening",
-            welcomeMessage: "‎𝘽𝙊𝙏 𝘾𝙊𝙉𝙉𝙀𝘾𝙏𝙀𝘿 𝙎𝙐𝘾𝘾𝙀𝙎𝙎𝙁𝙐𝙇𝙇🏴‍☠️📌\n\n𝗟𝗢𝗔𝗗𝗜𝗡𝗚 . . . ...👾🔥😈 /// 𝗔͟𝗖͟͠𝗧𝗜͟͠𝗩𝗘𝗗📨💀⚡▓▓▓▓▓░░░░░ 99% .......\n  ╭────────────◊\n\n🧸—͟͞͞★চলে এসেছি ⚡🧸 তোমাদের মাঝে 👀📌🕸️\nকেমন আছো প্রিয় 🏴‍☠️☄️\n\n—͟͞͞★𝘼𝘾𝙎 𝙒𝙊𝙍𝙇𝘿👀🌪️—͟͞͞★যেকোনোপ্রয়োজনে আমার  সিয়াম ভাইকে নক দিতে পারেন ধন্যবাদ ❤️‍🩹 ⚡ ⚠️\n\n\n📌👀🕸️╰─────────◊",
+            welcomeMessage: "‎𝘽𝙊𝙏 𝘾𝙊𝙉𝙉𝙀𝘾𝙏𝙀𝘿 𝙎𝙐𝘾𝘾𝙀𝙎𝙎𝙁𝙐𝙇𝙇🏴‍☠️📌\n\n𝗟𝗢𝗔𝗗𝗜𝗡𝗚 . . . ...👾🔥😈 /// 𝗔͟𝗖͟͠𝗧𝗜͟͠𝗩𝗘𝗗📨💀⚡▓▓▓▓▓░░░░░ 99% .......\n  ╭────────────◊\n\n🧸—͟͞͞★চলে এসেছি ⚡🧸 তোমাদের মাঝে 👀📌🕸️\nকেমন আছো প্রিয় 🏴‍☠️☄️\n\n—͟͞͞★𝘼𝘾𝙎 𝙒𝙊𝙍𝙇𝘿👀🌪️—͟͞͞★যেকোনোপ্রয়োজনে আমার  সিয়াম ভাইকে নক দিতে পারেন ধন্যবাদ ❤️‍🩹 ⚡ ⚠️\n\n\n📌👀🕸️╰─────────◊",
             defaultWelcomeMessage: `🫧🫧👀 প্রিয় 🫵💗👀\n╭•┄┅════❁🌺❁════┅┄•╮ {userName} \n\n\n╰•┄┅════❁🌺❁════┅┄•╯\nআসসালামুয়ালাইকুম 💚👑\n\nআপনাকে স্বাগতম 🏴‍☠️☄️\n {multiple} আমাদের {boxName} গ্রুপে 💢👑🌪️\n\n👑গ্রুপে সবার সাথে মিলেমিশে☄️ থাকবেন এবং যে কোন প্রয়োজনে আমার বস সিয়াম ভাই কে নক করতে পারেন 💖⚡💢\n\n\n\n𝘽𝙊𝙏 𝘾𝙍𝙀𝘼𝙏𝙊𝙍 : 𝘾𝙀𝙊⚠️🏴‍☠️ 𝙎𝙄𝙔𝘼𝙈 👀⚠️👑`
         }
     },
@@ -29,19 +29,19 @@ module.exports = {
         if (event.logMessageType !== "log:subscribe") return;
 
         return async function () {  
-            const hours = getTime("HH");
             const { threadID } = event;
             const added = event.logMessageData.addedParticipants;
 
-            // ------------------------------------------------------
-            // ▶ BOT ADD হলে - Bot এর ভিডিও প্লে হবে
-            // ------------------------------------------------------
+            // 🔥 BOT ADD হলে
             if (added.some(p => p.userFbId == api.getCurrentUserID())) {
 
+                // ✅ AUTO NICKNAME সেট করা
+                api.changeNickname(" -𝘿𝘼𝙉𝙂𝙀𝙍 😈🏴‍☠️⚡", threadID, api.getCurrentUserID());
+
+                // ▶ Bot Add Video
                 const botAddVideo = "https://files.catbox.moe/pjotil.mp4";
                 const videoPath = path.join(__dirname, "bot_add.mp4");
 
-                // Download only once
                 if (!fs.existsSync(videoPath)) {
                     const file = await axios.get(botAddVideo, { responseType: "arraybuffer" });
                     fs.writeFileSync(videoPath, file.data);
@@ -53,9 +53,7 @@ module.exports = {
                 });
             }
 
-            // ------------------------------------------------------
-            // ▶ MEMBERS ADD হলে - Member এর ভিডিও প্লে হবে
-            // ------------------------------------------------------
+            // 🔥 MEMBER ADD হলে
             if (!global.temp.welcomeEvent[threadID])
                 global.temp.welcomeEvent[threadID] = { joinTimeout: null, dataAddedParticipants: [] };
 
@@ -87,7 +85,7 @@ module.exports = {
                     .replace(/\{boxName\}|\{threadName\}/g, threadInfo.threadName)
                     .replace(/\{multiple\}/g, multi ? "আপনারা" : "আপনি");
 
-                // Member Add Video
+                // ▶ Member Add Video
                 const memberVideo = "https://files.catbox.moe/vf4ueu.mp4";
                 const videoPath = path.join(__dirname, "member_add.mp4");
 
@@ -107,4 +105,4 @@ module.exports = {
             }, 1500);
         };
     }
-                        }
+};
