@@ -5,12 +5,12 @@ const path = require("path");
 module.exports = {
     config: {
         name: "cd",
-        version: "2.0",
+        version: "2.1",
         author: "siyam8881",
         countDown: 5,
         role: 2,
         shortDescription: "auto reply video",
-        longDescription: "Replies with video when certain words or emojis are sent",
+        longDescription: "Replies with video when exact words or emojis are sent",
         category: "reply",
     },
 
@@ -19,13 +19,13 @@ module.exports = {
     onChat: async function ({ event, message }) {
         if (!event.body) return;
 
-        // All triggers here
+        // Allowed triggers (exact match only)
         const triggers = ["siyam", "😎", "👑", "⚠️", "🏴‍☠️", "☄️"];
 
-        const text = event.body.toLowerCase();
+        const text = event.body.toLowerCase().trim();
 
-        // Check if message contains any trigger
-        const matched = triggers.some(t => text.includes(t.toLowerCase()));
+        // EXCAT MATCH only
+        const matched = triggers.includes(text);
         if (!matched) return;
 
         const videoURL = "https://files.catbox.moe/vf4ueu.mp4";
@@ -33,14 +33,18 @@ module.exports = {
         const filePath = path.join(__dirname, fileName);
 
         try {
-            // Download video
             const response = await axios.get(videoURL, { responseType: "arraybuffer" });
             fs.writeFileSync(filePath, response.data);
 
             await message.reply({
                 body: 
-`々𝗪͜͡𝗛𝗢☄️🏴‍☠️⚠️ 𝗜 𝗮𝗺 -?  🎭👑\n\n\n𝗬𝗢𝗨 𝗛𝗔𝗩𝗘 𝗡𝗢 𝗜𝗗𝗘𝗔\n\n𝗖𝗼𝗱𝗲 𝗥𝘂𝗹𝗲𝗿👀🌪️\n\n
-‎___________________☠️⚡`,
+`々𝗪͜͡𝗛𝗢☄️🏴‍☠️⚠️ 𝗜 𝗮𝗺 -?  🎭👑
+
+𝗬𝗢𝗨 𝗛𝗔𝗩𝗘 𝗡𝗢 𝗜𝗗𝗘𝗔
+
+𝗖𝗼𝗱𝗲 𝗥𝘂𝗹𝗲𝗿👀🌪️
+
+___________________☠️⚡`,
                 attachment: fs.createReadStream(filePath)
             });
 
@@ -49,7 +53,6 @@ module.exports = {
             await message.reply("⚠️ ভাই, ভিডিও লোড করতে সমস্যা হইছে!");
         }
 
-        // Delete temp file
         setTimeout(() => {
             if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
         }, 5000);
