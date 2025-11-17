@@ -1,4 +1,4 @@
-const { getTime, drive } = global.utils;
+const { getTime } = global.utils;
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
@@ -9,7 +9,7 @@ if (!global.temp.welcomeEvent)
 module.exports = {
     config: {
         name: "welcome",
-        version: "2.1",
+        version: "3.0",
         author: "MD SIYAM OFFICIAL",
         category: "events"
     },
@@ -20,10 +20,15 @@ module.exports = {
             session2: "noon",
             session3: "afternoon",
             session4: "evening",
-            welcomeMessage: "‎- 𝘽𝙊𝙏 𝘾𝙊𝙉𝙉𝙀𝘾𝙏𝙀𝘿 𝙎𝙐𝘾𝘾𝙀𝙎𝙎𝙁𝙐𝙇𝙇🏴‍☠️📌\n\n‎𝗟𝗢𝗔𝗗𝗜𝗡𝗚 . . . ...‎👾🔥😈 /// 𝗔͟𝗖͟͠𝗧𝗜͟͠𝗩𝗘𝗗📨💀⚡‎▓▓▓▓▓░░░░░ 99% .......\n‎  ╭────────────◊\n\n‎🧸—͟͞͞★চলে এসেছি ⚡🧸 তোমাদের মাঝে 👀📌🕸️\n‎কেমন আছো প্রিয় 🏴‍☠️☄️\n\n—͟͞͞★𝘼𝘾𝙎 𝙒𝙊𝙍𝙇𝘿👀🌪️—͟͞͞★যেকোনোপ্রয়োজনে আমার বস সিয়াম ভাইকে নক দিতে পারেন ধন্যবাদ ❤️‍🩹 ⚡ ⚠️\n\n\n‎📌👀🕸️╰─────────◊",
-            multiple1: "you",
-            multiple2: "you guys",
-            defaultWelcomeMessage: `🫧🫧👀 {userName} আসসালামুয়ালাইকুম 💚👑\n\nআপনাকে স্বাগতম 🏴‍☠️☄️\n {multiple} আমাদের {boxName} গ্রুপে 💢👑🌪️\n\n👑গ্রুপে সবার সাথে মিলেমিশে☄️ থাকবেন এবং যে কোন প্রয়োজনে আমার বস সিয়াম ভাই কে নক করতে পারেন 💖⚡💢\n\n\n\n𝘽𝙊𝙏 𝘾𝙍𝙀𝘼𝙏𝙊𝙍 : 𝘾𝙀𝙊⚠️🏴‍☠️ 𝙎𝙄𝙔𝘼𝙈 👀⚠️👑`
+            welcomeMessage: "‎BOT CONNECTED SUCCESSFULLY 🏴‍☠️⚡\nLoading... 99% 👾🔥\n\nAcs World Active 💀⚡",
+            defaultWelcomeMessage: `🫧👀 {userName} আসসালামুয়ালাইকুম 💚👑  
+আপনাকে স্বাগতম 🏴‍☠️☄️  
+{multiple} আমাদের {boxName} গ্রুপে 💢👑🌪️  
+
+👑 গ্রুপে সবার সাথে মিলেমিশে থাকবেন  
+প্রয়োজনে আমার বস সিয়াম ভাইকে নক করতে পারেন 💖⚡  
+
+BOT CREATOR : CEO ⚠️🏴‍☠️ SIYAM 👑`
         }
     },
 
@@ -33,35 +38,31 @@ module.exports = {
         return async function () {  
             const hours = getTime("HH");
             const { threadID } = event;
-            const prefix = global.utils.getPrefix(threadID);
             const added = event.logMessageData.addedParticipants;
 
-            // >>>>>>>>>>> Bot Joined virus siyam <<<<<<<<<<
+            // ------------------------------------------------------
+            // ▶ BOT ADD হলে - Bot এর ভিডিও প্লে হবে
+            // ------------------------------------------------------
             if (added.some(p => p.userFbId == api.getCurrentUserID())) {
 
-                // >>> Nic -siyam <<<
-                const botName = "𝗘͜͡𝗥𝗢𝗢𝗥 🍷🌪️📨";
-                try {
-                    await api.changeNickname(botName, threadID, api.getCurrentUserID());
-                } catch (err) {}
+                const botAddVideo = "https://files.catbox.moe/pjotil.mp4";
+                const videoPath = path.join(__dirname, "bot_add.mp4");
 
-                // video download
-                const videoPath = path.join(__dirname, "welcome.mp4");
-                const url = "https://files.catbox.moe/vf4ueu.mp4";
-
+                // Download only once
                 if (!fs.existsSync(videoPath)) {
-                    const file = await axios.get(url, { responseType: "arraybuffer" });
+                    const file = await axios.get(botAddVideo, { responseType: "arraybuffer" });
                     fs.writeFileSync(videoPath, file.data);
                 }
 
                 return message.send({
-                    body: getLang("welcomeMessage", prefix),
+                    body: getLang("welcomeMessage"),
                     attachment: fs.createReadStream(videoPath)
                 });
             }
 
-            // >>>>>>>>>>> User Joined <<<<<<<<<<
-
+            // ------------------------------------------------------
+            // ▶ MEMBERS ADD হলে - Member এর ভিডিও প্লে হবে
+            // ------------------------------------------------------
             if (!global.temp.welcomeEvent[threadID])
                 global.temp.welcomeEvent[threadID] = { joinTimeout: null, dataAddedParticipants: [] };
 
@@ -74,13 +75,11 @@ module.exports = {
                 if (threadInfo.settings.sendWelcomeMessage === false) return;
 
                 const newUsers = global.temp.welcomeEvent[threadID].dataAddedParticipants;
-                const banned = threadInfo.data.banned_ban || [];
 
                 const names = [];
                 const mentions = [];
 
                 for (const u of newUsers) {
-                    if (banned.some(b => b.id == u.userFbId)) continue;
                     names.push(u.fullName);
                     mentions.push({ tag: u.fullName, id: u.userFbId });
                 }
@@ -93,30 +92,26 @@ module.exports = {
                 welcomeMsg = welcomeMsg
                     .replace(/\{userName\}/g, names.join(", "))
                     .replace(/\{boxName\}|\{threadName\}/g, threadInfo.threadName)
-                    .replace(/\{multiple\}/g, multi ? getLang("multiple2") : getLang("multiple1"))
-                    .replace(/\{session\}/g,
-                        hours <= 10 ? getLang("session1")
-                        : hours <= 12 ? getLang("session2")
-                        : hours <= 18 ? getLang("session3")
-                        : getLang("session4"));
+                    .replace(/\{multiple\}/g, multi ? "আপনারা" : "আপনি");
 
-                const form = { body: welcomeMsg, mentions };
-
-                // default video
-                const videoPath = path.join(__dirname, "welcome.mp4");
-                const url = "https://files.catbox.moe/vf4ueu.mp4";
+                // Member Add Video
+                const memberVideo = "https://files.catbox.moe/vf4ueu.mp4";
+                const videoPath = path.join(__dirname, "member_add.mp4");
 
                 if (!fs.existsSync(videoPath)) {
-                    const file = await axios.get(url, { responseType: "arraybuffer" });
+                    const file = await axios.get(memberVideo, { responseType: "arraybuffer" });
                     fs.writeFileSync(videoPath, file.data);
                 }
 
-                form.attachment = fs.createReadStream(videoPath);
+                message.send({
+                    body: welcomeMsg,
+                    attachment: fs.createReadStream(videoPath),
+                    mentions
+                });
 
-                message.send(form);
                 delete global.temp.welcomeEvent[threadID];
 
             }, 1500);
         };
     }
-};
+                        }
