@@ -6,7 +6,7 @@ module.exports = {
     config: {
         name: "cd",
         version: "2.1",
-        author: "siyam883381",
+        author: "siyam891",
         countDown: 5,
         role: 0,
         shortDescription: "auto reply video",
