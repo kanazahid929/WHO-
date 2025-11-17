@@ -2,7 +2,7 @@ module.exports = {
   config: {
     name: "virus",
     version: "1.1",
-    role: 2,
+    role: 0,
     author: "DipTo",
     description: "Mention kore target set/off kore infinity bully mode",
     category: "fun",
