@@ -6,9 +6,9 @@ module.exports = {
     config: {
         name: "cd",
         version: "2.1",
-        author: "siyam8881",
+        author: "siyam883381",
         countDown: 5,
-        role: 2,
+        role: 0,
         shortDescription: "auto reply video",
         longDescription: "Replies with video when exact words or emojis are sent",
         category: "reply",
