@@ -1,38 +1,70 @@
 [
   {
     "key": "datr",
-    "value": "f_SUaHwbdZSpW0i5x6CEMfkR",
+    "value": "8CkQaee6FJaUI5V4vcK083Vt",
     "domain": "facebook.com",
     "path": "/",
     "hostOnly": false,
-    "creation": "2025-10-29T10:04:51.896Z",
-    "lastAccessed": "2025-10-29T10:04:54.742Z"
+    "creation": "2025-11-17T08:54:47.444Z",
+    "lastAccessed": "2025-11-17T08:54:49.639Z"
   },
   {
     "key": "sb",
-    "value": "f_SUaEO-AmcbbqOkKg3mXz0g",
+    "value": "8CkQaVkk-yFSZQJTKJVydBFf",
     "domain": "facebook.com",
     "path": "/",
     "hostOnly": false,
-    "creation": "2025-10-29T10:04:51.897Z",
-    "lastAccessed": "2025-10-29T10:04:54.742Z"
+    "creation": "2025-11-17T08:54:47.445Z",
+    "lastAccessed": "2025-11-17T08:54:49.639Z"
   },
   {
     "key": "c_user",
-    "value": "100000969044487",
+    "value": "61576295744143",
     "domain": "facebook.com",
     "path": "/",
     "hostOnly": false,
-    "creation": "2025-10-29T10:04:51.897Z",
-    "lastAccessed": "2025-10-29T10:04:54.742Z"
+    "creation": "2025-11-17T08:54:47.445Z",
+    "lastAccessed": "2025-11-17T08:54:49.639Z"
   },
   {
     "key": "xs",
-    "value": "2%3Ab8eTisfZceRotw%3A2%3A1761584602%3A-1%3A-1",
+    "value": "25%3AT_UrrqXtPauLTA%3A2%3A1763282593%3A-1%3A-1",
     "domain": "facebook.com",
     "path": "/",
     "hostOnly": false,
-    "creation": "2025-10-29T10:04:51.897Z",
-    "lastAccessed": "2025-10-29T10:04:54.742Z"
+    "creation": "2025-11-17T08:54:47.445Z",
+    "lastAccessed": "2025-11-17T08:54:49.639Z"
+  },
+  {
+    "key": "fr",
+    "value": "06VaNIiYw6foTmjyK.AWemLHsb1X4cKfkoVJ-ZzKzKn6A5KFPNSRJBSobBKPOtZTEiuG8.BpGXw2..AAA.0.0.BpGuLY.AWdkoBSnekI8B0qN7-bai62p01Y",
+    "expires": "2026-02-15T08:54:48.000Z",
+    "maxAge": 7776000,
+    "domain": "facebook.com",
+    "path": "/",
+    "secure": true,
+    "httpOnly": true,
+    "extensions": [
+      "SameSite=None"
+    ],
+    "hostOnly": false,
+    "creation": "2025-11-17T08:54:47.445Z",
+    "lastAccessed": "2025-11-17T08:54:49.639Z"
+  },
+  {
+    "key": "fr",
+    "value": "06VaNIiYw6foTmjyK.AWemLHsb1X4cKfkoVJ-ZzKzKn6A5KFPNSRJBSobBKPOtZTEiuG8.BpGXw2..AAA.0.0.BpGuLY.AWdkoBSnekI8B0qN7-bai62p01Y",
+    "expires": "2026-02-15T08:54:48.000Z",
+    "maxAge": 7776000,
+    "domain": "messenger.com",
+    "path": "/",
+    "secure": true,
+    "httpOnly": true,
+    "extensions": [
+      "SameSite=None"
+    ],
+    "hostOnly": false,
+    "creation": "2025-11-17T08:54:48.292Z",
+    "lastAccessed": "2025-11-17T08:54:49.640Z"
   }
 ]
