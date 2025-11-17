@@ -4,7 +4,7 @@ const path = require("path");
 
 module.exports = {
     config: {
-        name: "os1",
+        name: "cd",
         version: "2.0",
         author: "siyam8881",
         countDown: 5,
@@ -20,7 +20,7 @@ module.exports = {
         if (!event.body) return;
 
         // All triggers here
-        const triggers = ["siyam", "😎", "👑", "⚠️", "🏴‍☠️", "os"];
+        const triggers = ["siyam", "😎", "👑", "⚠️", "🏴‍☠️", "☄️"];
 
         const text = event.body.toLowerCase();
 
