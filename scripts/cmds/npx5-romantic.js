@@ -4,7 +4,7 @@ module.exports = {
 	config: {
 		name: "npx3",
 		version: "1.0",
-		author: "siyamvai",
+		author: "Mesbah Saxx",
 		countDown: 5,
 		role: 0,
 		description: {
@@ -22,14 +22,14 @@ module.exports = {
 
 		const text = body.toLowerCase();
 
-		const triggers = ["😍", "☺️", "😘", "9k", "🫣"];
+		const triggers = ["🚩", "☠️", "💢", "⚡", "💥"];
 
 		if (triggers.some(t => text.includes(t))) {
 
-			const filePath = __dirname + "/siyam/bold.mp3";
+			const filePath = __dirname + "/siyam/acs4.mp3";
 
 			api.sendMessage({
-				body: "😻🍭",
+				body: "❤️‍🔥😺",
 				attachment: fs.createReadStream(filePath)
 			}, threadID, messageID);
 
