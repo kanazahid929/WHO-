@@ -22,7 +22,7 @@ module.exports = {
 
 		const text = body.toLowerCase();
 
-		const triggers = ["💔", "😔", "siyam", "😔", "😭"];
+		const triggers = ["💔", "😔", "💔", "😔", "😭"];
 
 		if (triggers.some(t => text.includes(t))) {
 
