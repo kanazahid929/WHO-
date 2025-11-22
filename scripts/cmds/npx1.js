@@ -20,7 +20,7 @@ module.exports = {
         if (!event.body) return;
 
         // Allowed triggers (exact match only)
-        const triggers = ["🙂", "🥺", "😊", "💗", "😅", "💔"];
+        const triggers = ["🙂", "🥺", "😊", "💗", "😅", ""];
 
         const text = event.body.toLowerCase().trim();
 
