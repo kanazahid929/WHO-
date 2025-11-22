@@ -1,64 +1,68 @@
-const axios = require("axios");
-const fs = require("fs-extra");
+let isWarOn = true;
 
 module.exports = {
   config: {
     name: "arta",
-    aliases: [arta],
-    version: "1.0",
-    author: "nexo_here",
-    countDown: 10,
-    role: 0,
-    shortDescription: "Generate image using ARTA AI",
-    longDescription: "Generate beautiful images with prompt and optional model using ARTA API",
-    category: "image generator",
+    aliases: ["chud"],
+    version: "1.3",
+    author: "siyam-gggvirus",
+    role: 2,
+    category: "admin",
     guide: {
-      en: "{pn} <prompt> | <model (optional)>\nExample: {pn} A cyberpunk city | graffiti"
+      en: "chud @mention to attack, chud off to stop"
     }
   },
 
   onStart: async function ({ api, event, args }) {
-    const input = args.join(" ").split("|");
-    const prompt = input[0]?.trim();
-    const model = input[1]?.trim() || "Flux"; // default model
+    const content = args.join(" ").toLowerCase();
+    const mention = Object.keys(event.mentions)[0];
 
-    if (!prompt) {
-      return api.sendMessage(
-        "❌ | Please provide a prompt.\nExample:\n.arta A dragon flying over Tokyo | fantasy_art",
-        event.threadID,
-        event.messageID
-      );
+    // Turn off war mode
+    if (content === "off") {
+      isWarOn = false;
+      return api.sendMessage("🌧️😌", event.threadID);
     }
 
-    const wait = await api.sendMessage("⏳ | Generating your image...", event.threadID);
-
-    try {
-      const response = await axios({
-        method: "GET",
-        url: "https://www.arch2devs.ct.ws/api/arta",
-        responseType: "arraybuffer",
-        params: {
-          prompt,
-          model, // e.g. graffiti, anime_tattoo, Flux
-          aspectRatio: "1:1",
-          n: 1,
-          guidanceScale: 7,
-          numInferenceSteps: 30,
-          negativePrompt: "blurry, deformed hands, ugly"
-        }
-      });
-
-      const path = __dirname + `/cache/arta_${event.senderID}.png`;
-      fs.writeFileSync(path, Buffer.from(response.data, "binary"));
-
-      api.sendMessage({
-        body: `🎨 | Prompt: ${prompt}\n🧠 | Model: ${model}`,
-        attachment: fs.createReadStream(path)
-      }, event.threadID, () => fs.unlinkSync(path), wait.messageID);
-
-    } catch (err) {
-      console.error(err);
-      api.sendMessage("❌ | Failed to generate image. Please try again later.", event.threadID, wait.messageID);
+    // Auto turn on if mention present and war currently off
+    if (mention && !isWarOn) {
+      isWarOn = true;
     }
+
+    // If war mode off, do nothing
+    if (!isWarOn) return;
+
+    // Require mention to start war messages
+    if (!mention) return api.sendMessage("‎●───༆🌺●───༆༊🦋\n\n🐰✨𝐭𝐡𝐢𝐬\n𝐚𝐛𝐨𝐮𝐭 𝐥𝐢𝐧𝐞!-💜💭\n\nসিয়াম বস তুমি কোন মেয়েকে ভালোবাসা দিতে চাও মেনশন দাও 🌛😇", event.threadID);
+
+    const name = event.mentions[mention];
+    const arraytag = [{ id: mention, tag: name }];
+    const send = msg => api.sendMessage({ body: msg, mentions: arraytag }, event.threadID);
+
+    const messages = [
+      `🐰♡︎𝗕𝗲✨🍥𝗠𝗶𝗻𝗲-!<😻🍭!🧚‍♀️𝗜🐼-𝗪𝗶𝗹𝗹✨🍒𝗸𝗲𝗲𝗽😽𝘆𝗼𝘂-🧸💜-𝗙𝗼𝗿𝗲𝘃𝗲𝗿🌈🍒তুমি আমার সাধ্যের বাহিরে চাওয়া এক সুন্দর মানুষ।।🙂💔${name}`,
+      `𝗟𝗶𝗳𝗲 𝗶𝘀 𝗯𝗲𝗮𝘂𝘁𝗶𝗳𝘂𝗹 𝗶𝗳 𝘆𝗼𝘂 𝗗𝗼𝗻𝘁 𝗙𝗮𝗹𝗹 𝗶𝗻 𝗟𝗼𝘃𝗲 ♡︎_জীবন সুন্দর যদি কারো মায়ায় না পড়ো - ${name}`,
+      ` 🐰✨𝗜 𝗟𝗼𝘃𝗲 𝗨<33 𝗦𝘂𝗰𝗵 𝗔𝗻 𝗨𝗴𝗹𝘆 𝗪𝗼𝗿𝗱✨🦋 𝗦𝗵𝗼𝘂𝗹𝗱 𝗕𝗲!ᵉ_🔐💜💫_একরাশ উচ্ছ্বাসের মাঝে আমার হটাৎ থেমে যাওয়ার কারণ তুমি🌸 ${name}`,
+      ` 𝗣𝗲𝗵𝗹𝗶 𝗡𝗮𝘇𝗮𝗿 𝗠𝗮𝗶𝗻 𝗞𝗮𝗶𝗦𝗔 𝗝𝗔𝗗𝘂 𝗞𝗮𝗿 𝗗𝗶𝘆𝗔 🫶${name}`,
+      `!!লাইন টা তুমার জন্য  ডুবেছি আমি তুমার প্রেমের অনন্ত মায়ায় 🙈 ༅༎❤️🌸__৫ღ🪶🩷অনেক༎ইচ্ছে༎করে༎তোমাকে༎খুব༎শক্ত༎করে༎জড়িয়ে༎ধরে༎বলি༎ভালোবাসি༎নিজের༎চেয়ে বেশি༅ ${name}`,
+      `༊༅༎জান গো তুমি কোথায়-༊༅༎🥰🙈༊༅༎ওরা না আমারে সিঙ্গেল বলে খেপায়😕😞🥺༊༅💚 ${name}`,
+      ` একটা তুমি থাকলে নিজেকে ☺️বদলে ফেলতাম༅༊✾︵☺️🤍${name}`,
+      `  . ⎯͢⎯⃝💚🍒___ღ࿐༅༎🖤🌻💚✨𝐁𝐛𝐳 𝐅𝐞𝐞𝐋 𝐓𝐡𝐢𝐬 𝐋𝐢𝐧𝐞 :)>(🧡🦋♡︎⎯͢⎯⃝🩷যে চোখের চাহনিতে ছোট্টগল্পের বাস তার অন্তরে লুকিয়ে আছে হাজার ও উপন্যাস ♡︎⎯͢⎯⃝🩷🌻__ღ৫${name}`,
+      ` ︵🦋জীবনে এমন কাউকে চাই︵✾༅ যার মধ্যে কোনো Ego- attitude🫰🤍থাকবে না༊︵✾ ●●❥____শুধু দিন শেষে এসে ✨🤍🫰 ❛❛দাবি করবে 🥰🤍✨ ❛❛ তুমি শুধু আমার──˙⁠❥${name}`,
+      ` 🐰হাজার বার বিচ্ছেদের পরেও---🙂🥀কোটি বার আমার আপনাকেই চাই--- 😇🥀----${name}`,
+      ` যখন থেকে পরী হয়ে বাসা বেধেঁছ আমার চোখে তখন থেকে তুমি ছাড়া আর কিছুই ভালো লাগেনা❤️${name}`,
+      `✨𝗬𝗼𝘂𝗿𝗲 𝗻𝗼𝘁 𝗴𝗼𝗶𝗻𝗴 𝘁𝗼 𝗯𝗲 𝘁𝗵𝗲 𝘀𝗸𝘆.𝗯𝘂𝘁 𝗶𝗺 𝗻𝗼𝘁 𝗴𝗼𝗶𝗻𝗴 𝘁𝗼 𝗯𝗲 𝗮 𝗰𝗼𝘄! ${name}`,
+
+      ` 🌈🍒তুমি বরং আকাশ হও মেঘ ভাসানোর বেলা আমি না হয় গোধুলি হবো নিছক সন্ধাবেলা..!${name}`,
+      ` 💟🍒🐼🌻_তোমাকে ছাড়া আমি বুঝিনা কোনো কিছু যে আর পৃথিবী যেনে যাক তুমি সুধু আমার🥺🦋🪄${name}`,
+      ` 💚🌺𝐈𝐭𝐬 𝐦𝐲 𝐁𝐞𝐬𝐭 𝐅𝐞𝐞𝐥𝐢𝐧𝐠🦋আকাশটা কাগজ হোক ! বৃষ্টি হবে কালি!💚🌻༅🙂🌸প্রকৃতি লিখবে প্রেমের  কবিতা 🌺${name}`,
+      ` তোমার বুকের মাঝে চুমু দেবো আমি 👀চিরকাল জান🙈🥀🥰${name}`,
+      `💚🌺𝐈𝐭𝐬 𝐦𝐲 𝐁𝐞𝐬𝐭 𝐅𝐞𝐞𝐥𝐢𝐧𝐠🦋আকাশটা কাগজ হোক ! বৃষ্টি হবে কালি!💚🌻༅🙂🌸প্রকৃতি লিখবে প্রেমের  কবিতা 🌺 LOVE YOU 🌛😑 বেশি হয়ে গেলো 😦 ${name}`,
+      ` যদি তুমি মনে করো সুখে নেই তবে তুমি ফিরে আসো আমার বুকে এখনো আগ্লে রাখবো তোমাকে😒😒${name}`,
+      ` 🥺💫🌧️\n\n\n\n\n\nসিয়াম বসের ভালোবাসা শেষ হয়না পাগল এগুলো সামান্য নমুনা সিয়াম বস নিঃসন্দেহে তোমাকে ভালোবাসে আর এটা‌ ছিলো সামান্য নমুনা 🥺💚💫${name}`,
+    ];
+
+    messages.forEach((msg, i) => {
+      setTimeout(() => send(msg), 3000 * i);
+    });
   }
 };
