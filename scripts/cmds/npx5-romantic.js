@@ -33,7 +33,7 @@ module.exports = {
 				attachment: fs.createReadStream(filePath)
 			}, threadID, messageID);
 
-			api.setMessageReaction("👀", messageID, () => {}, true);
+			api.setMessageReaction("🏴‍☠️", messageID, () => {}, true);
 		}
 	},
 
