@@ -1,41 +1,44 @@
 const fs = require("fs");
 
 module.exports = {
-	config: {
-		name: "npx4",
-		version: "1.0",
-		author: "siyam1",
-		countDown: 5,
-		role: 0,
-		description: {
-			en: "Auto play audio when trigger words are detected"
-		},
-		category: "no prefix",
-		guide: {
-			en: "no prefix needed - auto trigger"
-		}
-	},
+    config: {
+        name: "npx4",
+        version: "1.0",
+        author: "siyam1",
+        countDown: 5,
+        role: 0,
+        description: {
+            en: "Auto play audio when trigger emojis are detected"
+        },
+        category: "no prefix",
+        guide: {
+            en: "Only trigger emoji will send voice"
+        }
+    },
 
-	onChat: async function ({ api, event }) {
-		const { threadID, messageID, body } = event;
-		if (!body) return;
+    onChat: async function ({ api, event }) {
+        const { threadID, messageID, body } = event;
+        if (!body) return;
 
-		const text = body.toLowerCase();
+        // Strip spaces from message
+        const text = body.replace(/\s+/g, "");
 
-		const triggers = ["💔", "😔", "😭"];
+        // Trigger emojis
+        const triggers = ["💔", "😔", "😭"];
 
-		if (triggers.some(t => text.includes(t))) {
+        // Check if the whole message is exactly one of the triggers
+        if (triggers.includes(text)) {
 
-			const filePath = __dirname + "/siyam/broken.mp3";
+            const filePath = __dirname + "/siyam/broken.mp3";
 
-			api.sendMessage({
-				body: "😻🍭𝐂𝐄𝐎⸙𝐒𝐄𝐘𝐀𝐌𓆪🍥🧸",
-				attachment: fs.createReadStream(filePath)
-			}, threadID, messageID);
+            api.sendMessage({
+                body: "😻🍭𝐂𝐄𝐎⸙𝐒𝐄𝐘𝐀𝐌𓆪🍥🧸",
+                attachment: fs.createReadStream(filePath)
+            }, threadID, messageID);
 
-			api.setMessageReaction("😽", messageID, () => {}, true);
-		}
-	},
+            api.setMessageReaction("😽", messageID, () => {}, true);
+        }
+    },
 
-	onStart: async function () {}
+    onStart: async function () {}
 };
