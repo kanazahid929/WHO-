@@ -26,7 +26,7 @@ module.exports = {
 
 		if (triggers.some(t => text.includes(t))) {
 
-			const filePath = __dirname + "/siyam/rm.mp3";
+			const filePath = __dirname + "/siyam/bold.mp3";
 
 			api.sendMessage({
 				body: "😻🍭",
