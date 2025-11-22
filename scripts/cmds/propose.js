@@ -2,7 +2,7 @@ let isWarOn = true;
 
 module.exports = {
   config: {
-    name: "risk",
+    name: "propose",
     aliases: ["chud"],
     version: "1.3",
     author: "siyam-virus",
