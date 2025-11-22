@@ -27,7 +27,7 @@ module.exports = {
 
       const msg = {
         body: "❤️‍🔥😺",
-        attachment: fs.createReadStream(__dirname + `/siyam./fg.mp3`)
+        attachment: fs.createReadStream(__dirname + `/siyam/fg.mp3`)
       };
 
       api.sendMessage(msg, threadID, messageID);
