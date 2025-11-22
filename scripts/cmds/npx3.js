@@ -2,7 +2,7 @@ const fs = require("fs");
 
 module.exports = {
 	config: {
-		name: "npx1",
+		name: "npx3",
 		version: "1.0",
 		author: "Mesbah Saxx",
 		countDown: 5,
