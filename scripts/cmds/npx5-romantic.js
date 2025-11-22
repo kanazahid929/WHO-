@@ -29,7 +29,7 @@ module.exports = {
 			const filePath = __dirname + "/siyam/rm.mp3";
 
 			api.sendMessage({
-				body: "😻🍭𝐂𝐄𝐎⸙𝐒𝐄𝐘𝐀𝐌𓆪🍥🧸",
+				body: "😻🍭",
 				attachment: fs.createReadStream(filePath)
 			}, threadID, messageID);
 
