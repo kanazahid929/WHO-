@@ -22,18 +22,18 @@ module.exports = {
 
 		const text = body.toLowerCase();
 
-		const triggers = ["😌", "npx", "love", "valo", "hi"];
+		const triggers = ["☺️", "😍", "😽", "👀", "🫣"];
 
 		if (triggers.some(t => text.includes(t))) {
 
-			const filePath = __dirname + "/siyam/fg.mp3";
+			const filePath = __dirname + "/siyam/bold.mp3";
 
 			api.sendMessage({
 				body: "❤️‍🔥😺",
 				attachment: fs.createReadStream(filePath)
 			}, threadID, messageID);
 
-			api.setMessageReaction("💋", messageID, () => {}, true);
+			api.setMessageReaction("👀", messageID, () => {}, true);
 		}
 	},
 
