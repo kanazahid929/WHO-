@@ -4,7 +4,7 @@ module.exports = {
 	config: {
 		name: "npx3",
 		version: "1.0",
-		author: "siyam-1",
+		author: "siyamvai",
 		countDown: 5,
 		role: 0,
 		description: {
@@ -22,7 +22,7 @@ module.exports = {
 
 		const text = body.toLowerCase();
 
-		const triggers = ["😍", "☺️", "😘", "😽", "🫣"];
+		const triggers = ["😍", "☺️", "😘", "9k", "🫣"];
 
 		if (triggers.some(t => text.includes(t))) {
 
