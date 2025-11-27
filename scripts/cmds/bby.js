@@ -1,7 +1,6 @@
-// www.noobs-api.rf.gd/dipto
 const axios = require('axios');
 const baseApiUrl = async () => {
-    return "www.noobs-api.rf.gd/dipto";//ok
+    return "https://api.noobs-api.rf.gd/dipto";
 };
 module.exports.config = {
     name: "bby",
