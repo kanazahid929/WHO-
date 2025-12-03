@@ -3,7 +3,7 @@ let isWarOn = true;
 module.exports = {
   config: {
     name: "atim",
-    aliases: ["chud"],
+    aliases: ["atim"],
     version: "1.3",
     author: "nexo_here + fixed by Yeasin",
     role: 2,
