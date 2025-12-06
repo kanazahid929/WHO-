@@ -3,17 +3,21 @@ const moment = require("moment-timezone");
 module.exports = {
 config: {
 name: "auto",
-version: "2.0.0",
+version: "2.0.2",
 role: 0,
 author: "siyam virus",
-description: "AutoTime",
+description: "AutoTime with per-group off/on",
 category: "autotime",
 countDown: 3
 },
 
 onLoad: async ({ api }) => {
-const messages = {
-"12:00:00 AM": { message: "༆-✿「সময় 12:00 AM」༊࿐•—»🍭𝐂𝐄𝐎⸙𝐒𝐄𝐘𝐀𝐌𓆪彡🌈«— 💫(✷‿✷)°🐹\n╭•┄┅════❁🌺❁════┅┄•╮\n\n✢━━━━━━━━━━━━━━━✢\n╭────────────♡彡_____এক আকাশ ভালোবাসা এক মুঠো স্বপ্ন  আর এক জীবনের গল্প—সবই তোমার সাথে🌸🤍\n\n╰•┄┅════❁🌺❁════┅┄•╯\n\n 𝐂𝐫𝐞𝐚𝐭𝐨𝐫 ✨🍥🌈\n\n╭────────────♡彡 ╰➤😻🍭𝘾 𝙀 𝙊 -𝙎𝙀𝙔𝘼𝙈", attachmentURL: "" },
+// blockedThreads array initialize
+if (!global.db.autoBlockedThreads) global.db.autoBlockedThreads = [];
+
+const messages = {  
+  "12:00:00 AM": { message: "༆-✿「সময় 12:00 AM」༊࿐•—»🍭𝐂𝐄𝐎⸙𝐒𝐄𝐘𝐀𝐌𓆪彡🌈«— 💫(✷‿✷)°🐹\n╭•┄┅════❁🌺❁════┅┄•╮\n\n✢━━━━━━━━━━━━━━━✢\n╭────────────♡彡_____এক আকাশ ভালোবাসা এক মুঠো স্বপ্ন  আর এক জীবনের গল্প—সবই তোমার সাথে🌸🤍\n\n╰•┄┅════❁🌺❁════┅┄•╯\n\n 𝐂𝐫𝐞𝐚𝐭𝐨𝐫 ✨🍥🌈\n\n╭────────────♡彡 ╰➤😻🍭𝘾 𝙀 𝙊 -𝙎𝙀𝙔𝘼𝙈", attachmentURL: "" },
+
 "01:00:00 AM": { message: "༆-✿「সময় 1:00 AM」༊࿐•—»🍭𝐂𝐄𝐎⸙𝐒𝐄𝐘𝐀𝐌𓆪彡🌈«—• 💫(✷‿✷)°🐹\n╭•┄┅════❁🌺❁════┅┄•╮\n\n✢━━━━━━━━━━━━━━━✢\n╭────────────♡彡_____ヅ ♡︎❥一༊❝ভয় নেই প্রিয় আমার গল্পে তুমি কোনদিন অপ্রিয় হবে না-\n╭────────────♡彡🫶 T?🥰\n\n╰•┄┅════❁🌺❁════┅┄•╯\n\n𝐂𝐫𝐞𝐚𝐭𝐨𝐫 ✨🍥🌈\n\n╭────────────♡彡 ╰➤😻🍭𝘾 𝙀 𝙊 - 𝙎𝙀𝙔𝘼𝙈👀🌻\n___________________.", attachmentURL: "https://files.catbox.moe/johb76.mp4" },
 "02:00:00 AM": { message: "༆-✿「সময় 2:00 AM」༊࿐•—»🍭𝐂𝐄𝐎⸙𝐒𝐄𝐘𝐀𝐌𓆪彡🌈«—•💫(✷‿✷)°🐹\n╭•┄┅════❁🌺❁════┅┄•╮\n\n✢━━━━━━━━━━━━━━━✢\n╭────────────♡彡 ︵🌻🖤༉- কারো বিরক্তের কারণ হওয়ার চেয়ে🙃একাকীত্বে হারিয়ে যাওয়া অনেক ভালো !ღ༎🙂🙂\n\n╰•┄┅════❁🌺❁════┅┄•╯\n\n 𝐂𝐫𝐞𝐚𝐭𝐨𝐫 ✨🍥🌈\n\n╭────────────♡彡 ╰➤😻🍭𝘾 𝙀 𝙊 - 𝙎𝙀𝙔𝘼𝙈👀🌻\n\n╰•┄┅════❁🌺❁════┅┄•╯\n╭────────────♡彡\n╰➤😻🍭😽", attachmentURL: "https://files.catbox.moe/4r33da.mp4" },
 "03:00:00 AM": { message: "༆-✿「সময় 3:00 AM」༊࿐•—»🍭𝐂𝐄𝐎⸙𝐒𝐄𝐘𝐀𝐌𓆪彡🌈«—•💫(✷‿✷)°🐹\n╭•┄┅════❁🌺❁════┅┄•╮\n\n✢━━━━━━━━━━━━━━━✢ \n╭────────────♡彡_____✵♡︎___কি হবে  এত  মানুষের প্রিয় হয়ে__🦋🌻যদি আল্লাহ  প্রিয় না হতে পারি🙂🦋✵♡︎\n\n╰•┄┅════❁🌺❁════┅┄•╯\n\n 𝐂𝐞𝐚𝐭𝐨𝐫 ✨🍥🌈\n\n╭────────────♡彡 ╰➤😻🍭𝘾 𝙀 𝙊 - 𝙎𝙀𝙔𝘼𝙈👀💫\n\n_________________________", attachmentURL: "https://files.catbox.moe/813e6d.mp4" },
@@ -37,58 +41,54 @@ const messages = {
 "09:00:00 PM": { message: "সময় 9:00 PM「 === 「🌈💫」  ===\n--❖-(✷‿✷) --❖--\n✢━━━━━━━━━━━━━━━✢\n\n𝙗𝙚𝙡𝙞𝙚𝙫𝙚 𝙩𝙝𝙞𝙨 𝙡𝙞𝙣𝙚-!!🦋🐭\n\n🐰🍒🖇️✨ \n\n😍🦋᭄༊❥ভালো༊থাকার༊᭄ অপেক্ষা༊᭄\n\nকরতে❥করতে༊💜😍\n༊᭄ হয়তো༊᭄একদিন❥┼─༊😒😒💔\n👩‍❤️‍👨༊❥মৃত্যু༊᭄ এসে༊᭄ জীবনটাকে༊᭄থমকে❥┼দিবে─༊😔😔❤️\n\n\n𝐂𝐫𝐞𝐚𝐭𝐨𝐫 : 🏵-𝗕Ø𝗦𝗦• - 𝑺𝑬𝒀𝑨𝑴):<3🌻😽-🏵  」", attachmentURL: "https://files.catbox.moe/qba85e.mp4" },
 "10:00:00 PM": { message: "সময় 10:00 PM╭────────────♡彡 \n╰➤ \n\n💫(✷‿✷)°🐹\n╭•┄┅════❁\n❁════┅┄•\n\n\n__আসতাগ ফিরুল্লাহ__ \nআল্লাহ আমার প্রতি নিওতো করা গুনহা গুলি আপনি মাফ করেন \n\n\n•┄┅════❁🌺❁════┅┄•", attachmentURL: "https://files.catbox.moe/2u166p.mp4" },
 "11:00:00 PM": { message: "সময় 11:00 PM─────♡彡_____👀🩵🍂🥀𝄞⋆⃝⋆⃝𝄞♡🥀🍂কেউ প্রেম করতে চাইলে 𝄞⋆⃝⋆⃝𝄞♡🥀🍂🥀𝄞⋆⃝⋆⃝𝄞♡🥀🍂নাম ঠিকানা😇🍂🥀𝄞⋆⃝⋆⃝𝄞♡🥀🍂🍂🥀𝄞⋆⃝⋆⃝𝄞♡🥀🍂এক কপি ছবি 😊🍂🥀𝄞⋆⃝⋆⃝𝄞♡🥀🍂🥀𝄞⋆⃝⋆⃝𝄞♡🥀🍂নিয়ে inbox করুন😜🍂🥀𝄞⋆⃝⋆⃝𝄞♡🍂🥀𝄞⋆⃝⋆⃝𝄞🥀🍂অফার টি সীমিত🤭🍂🥀𝄞⋆⃝⋆⃝𝄞♡🥀🍂🥀𝄞⋆⃝⋆⃝𝄞♡🥀🍂সময়ের জন্য😒🍂🥀𝄞⋆⃝⋆⃝𝄞♡🥀🍂🍂🥀𝄞⋆⃝⋆⃝𝄞♡🥀🍂🐸😆🐸😆🐸🍂🥀𝄞⋆⃝⋆⃝𝄞♡🥀🍂\n\n╰•┄┅════❁🌺❁════┅┄•╯\n\n 𝐂𝐫𝐞𝐚𝐭𝐨𝐫 ✨🍥🌈\n\n╭────────────♡彡 ╰➤😻🍭", attachmentURL: "https://files.catbox.moe/ncndl1.mp4" }
-};
 
-const checkTime = () => {
-const now = moment().tz("Asia/Dhaka");
-const currentTime = now.format("hh:mm:ss A");
+};  
 
-const msg = messages[currentTime];
-if (msg) {
-const threads = global.db.allThreadData.map(thread => thread.threadID);
-threads.forEach(async threadID => {
-let messageData = { body: msg.message };
-if (msg.attachmentURL) {
-messageData.attachment = await global.utils.getStreamFromURL(msg.attachmentURL);
-}
-await api.sendMessage(messageData, threadID);
-});
-}
+const checkTime = () => {  
+  const now = moment().tz("Asia/Dhaka");  
+  const currentTime = now.format("hh:mm:ss A");  
 
-const nextMinute = moment().add(1, 'minute').startOf('minute');
-const msUntilNextMinute = nextMinute.diff(moment());
-setTimeout(checkTime, msUntilNextMinute);
-};
+  const msg = messages[currentTime];  
+  if (msg) {  
+    const threads = global.db.allThreadData.map(thread => thread.threadID);  
+    threads.forEach(async threadID => {  
+      // যদি গ্রুপ block থাকে, skip করবে  
+      if (global.db.autoBlockedThreads.includes(threadID)) return;  
+
+      let messageData = { body: msg.message };  
+      if (msg.attachmentURL) {  
+        messageData.attachment = await global.utils.getStreamFromURL(msg.attachmentURL);  
+      }  
+      await api.sendMessage(messageData, threadID);  
+    });  
+  }  
+
+  const nextMinute = moment().add(1, 'minute').startOf('minute');  
+  const msUntilNextMinute = nextMinute.diff(moment());  
+  setTimeout(checkTime, msUntilNextMinute);  
+};  
 
 checkTime();
 
 },
 
+onMessage: async ({ api, event }) => {
+const body = event.body.toLowerCase();
+
+if (body === "auto off") {  
+  if (!global.db.autoBlockedThreads.includes(event.threadID)) {  
+    global.db.autoBlockedThreads.push(event.threadID);  
+    return api.sendMessage("❌ এই গ্রুপে AutoMessage বন্ধ করা হলো।", event.threadID);  
+  }  
+  return;  
+}  
+
+if (body === "auto on") {  
+  global.db.autoBlockedThreads = global.db.autoBlockedThreads.filter(id => id !== event.threadID);  
+  return api.sendMessage("✅ এই গ্রুপে AutoMessage চালু করা হলো।", event.threadID);  
+}
+
+},
+
 onStart: () => {}
 };
-module.exports.run = async ({ api, event, args }) => {
-const fs = require("fs");
-const path = __dirname + "/autoStatus.json";
-
-if (!fs.existsSync(path)) {
-fs.writeFileSync(path, JSON.stringify({}));
-}
-
-let status = JSON.parse(fs.readFileSync(path));
-const threadID = event.threadID;
-
-if (args[0] === "off") {
-status[threadID] = false;
-fs.writeFileSync(path, JSON.stringify(status, null, 2));
-return api.sendMessage("⚠️ Auto Time ➝ OFF করা হয়েছে এই গ্রুপে", threadID);
-}
-
-if (args[0] === "on") {
-status[threadID] = true;
-fs.writeFileSync(path, JSON.stringify(status, null, 2));
-return api.sendMessage("✅ Auto Time ➝ ON করা হয়েছে এই গ্রুপে", threadID);
-}
-
-return api.sendMessage("Use:\n• auto on\n• auto off", threadID);
-};
-
