@@ -22,10 +22,10 @@ module.exports = {
 				"https://files.catbox.moe/zxj1vt.mp4",
 				"https://files.catbox.moe/zxj1vt.mp4",
 				"https://files.catbox.moe/zxj1vt.mp4",
-				"https://files.catbox.moe/orj1ec.jpg",
 				"https://files.catbox.moe/zxj1vt.mp4",
 				"https://files.catbox.moe/zxj1vt.mp4",
-				"https://files.catbox.moe/pnx17k.mp4",
+				"https://files.catbox.moe/zxj1vt.mp4",
+				"https://files.catbox.moe/zxj1vt.mp4",
 				"https://files.catbox.moe/zxj1vt.mp4",
 				"https://files.catbox.moe/zxj1vt.mp4",
 				"https://files.catbox.moe/zxj1vt.mp4"
