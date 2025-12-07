@@ -1,137 +1,131 @@
 const { config } = global.GoatBot;
-const { client } = global;
-const { writeFileSync } = require("fs-extra");
-
 module.exports = {
-  config: {
-    name: "whitelistthread",
-    aliases: ["wlt", "wt"],
-    version: "2.0",
-    author: "NTKhang",
-    countDown: 0,
-    role: 2,
-    description: { en: "Manage whitelist per thread" },
-    category: "owner",
-    guide: {
-      en: 'add [UIDs] -> Add members to current thread whitelist\n' +
-          'remove [UIDs] -> Remove members from current thread whitelist\n' +
-          'list -> List all whitelisted members in this thread\n' +
-          'mode <on/off> -> Global whitelist mode ON/OFF\n' +
-          'mode noti <on/off> -> Notification for non-whitelisted users'
+	config: {
+		name: "wl",
+		version: "1.0",
+		author: "rehat--",
+		countDown: 5,
+		role: 0,
+		longDescription: {
+			en: "Add, remove, edit whiteListIds"
+
+		},
+
+		category: "owner",
+		guide: {
+			en: '   {pn} [add | -a] <uid | @tag>: Add admin role for user'
+				+ '\n   {pn} [remove | -r] <uid | @tag>: Remove admin role of user'
+				+ '\n   {pn} [list | -l]: List all admins'
+        + '\n   {pn} [ on | off ]: enable and disable whiteList mode'
+		}
+
+	},
+
+	langs: {
+		en: {
+    	added: "✅ | Added whiteList role for %1 users:\n%2",
+			alreadyAdmin: "\n⚠ | %1 users already have whiteList role:\n%2",
+			missingIdAdd: "⚠ | Please enter ID or tag user to add in whiteListIds",
+			removed: "✅ | Removed whiteList role of %1 users:\n%2",
+			notAdmin: "⚠ | %1 users don't have whiteListIds role:\n%2",
+			missingIdRemove: "⚠ | Please enter ID or tag user to remove whiteListIds",
+			listAdmin: "👑 | List of whiteListIds:\n%1",
+      enable: "✅ Turned on-----𝗘͜͡𝗥𝗢𝗢𝗥 🍷🌪️\n\n____👀⚡",
+      disable: "✅ Turned off..............⚡ 𝗩͟𝗜͟͠𝗥𝗨𝗦"
+		}
+	},
+
+	onStart: async function ({ message, args, usersData, event, getLang, api }) {
+    const { writeFileSync } = require("fs-extra");
+		switch (args[0]) {
+			case "add":
+			case "-a": {
+				if (args[1]) {
+					let uids = [];
+					if (Object.keys(event.mentions).length > 0)
+						uids = Object.keys(event.mentions);
+					else if (event.messageReply)
+						uids.push(event.messageReply.senderID);
+					else
+						uids = args.filter(arg => !isNaN(arg));
+					const notAdminIds = [];
+					const adminIds = [];
+					for (const uid of uids) {
+					if (config.whiteListMode.whiteListIds.includes(uid))
+							adminIds.push(uid);
+						else
+							notAdminIds.push(uid);
+					}
+
+					config.whiteListMode.whiteListIds.push(...notAdminIds);
+					const getNames = await Promise.all(uids.map(uid => usersData.getName(uid).then(name => ({ uid, name }))));
+					writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
+					return message.reply(
+						(notAdminIds.length > 0 ? getLang("added", notAdminIds.length, getNames.map(({ uid, name }) => `• ${name} (${uid})`).join("\n")) : "")
+						+ (adminIds.length > 0 ? getLang("alreadyAdmin", adminIds.length, adminIds.map(uid => `• ${uid}`).join("\n")) : "")
+					);
+
+				}
+
+				else
+					return message.reply(getLang("missingIdAdd"));
+			}
+
+			case "remove":
+			case "-r": {
+				if (args[1]) {
+					let uids = [];
+					if (Object.keys(event.mentions).length > 0)
+						uids = Object.keys(event.mentions)[0];
+					else
+						uids = args.filter(arg => !isNaN(arg));
+				const notAdminIds = [];
+					const adminIds = [];
+					for (const uid of uids) {
+						if (config.whiteListMode.whiteListIds.includes(uid))
+							adminIds.push(uid);
+						else
+							notAdminIds.push(uid);
+					}
+
+					for (const uid of adminIds)
+						config.whiteListMode.whiteListIds.splice(config.whiteListMode.whiteListIds.indexOf(uid), 1);
+					const getNames = await Promise.all(adminIds.map(uid => usersData.getName(uid).then(name => ({ uid, name }))));
+					writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
+					return message.reply(
+						(adminIds.length > 0 ? getLang("removed", adminIds.length, getNames.map(({ uid, name }) => `• ${name} (${uid})`).join("\n")) : "")
+						+ (notAdminIds.length > 0 ? getLang("notAdmin", notAdminIds.length, notAdminIds.map(uid => `• ${uid}`).join("\n")) : "")
+					);
+	
+}
+
+				else
+					return message.reply(getLang("missingIdRemove"));
+			}
+
+			case "list":
+			case "-l": {
+				const getNames = await Promise.all(config.whiteListMode.whiteListIds.map(uid => usersData.getName(uid).then(name => ({ uid, name }))));
+				return message.reply(getLang("listAdmin", getNames.map(({ uid, name }) => `• ${name} (${uid})`).join("\n")));
+
+			}
+
+        case "on": {              
+   config.whiteListMode.enable = true;
+             writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
+                return message.reply(getLang("enable"))
+            }
+
+            case "off": {
+   config.whiteListMode.enable = false;
+               writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
+                return message.reply(getLang("disable"))
+            }
+
+            default:
+                return message.SyntaxError();
+        }
+
     }
-  },
 
-  langs: {
-    en: {
-      added: "✅ Added %1 member(s)\n%2",
-      alreadyWLT: "⚠ Already whitelisted %1 member(s)\n%2",
-      missingTIDAdd: "⚠ Please specify UID(s) or use no args to add all members",
-      removed: "✅ Removed %1 member(s)\n%2",
-      notAdded: "❌ Not in whitelist: %1 member(s)\n%2",
-      listWLTs: "✨ Whitelisted members:\n%1",
-      turnedOn: "✅ Global whitelist mode ENABLED",
-      turnedOff: "❌ Global whitelist mode DISABLED",
-      turnedOnNoti: "✅ Notification ON for non-whitelisted users",
-      turnedOffNoti: "❎ Notification OFF for non-whitelisted users"
-    }
-  },
-
-  noPrefix: true,
-
-  onStart: async function({ message, args, event, getLang, api }) {
-    if (!config.whiteListMode) config.whiteListMode = { enable: false, hideNotiMessage: false };
-    if (!config.whiteListThreads) config.whiteListThreads = {};
-    const threadID = event.threadID;
-    if (!config.whiteListThreads[threadID]) config.whiteListThreads[threadID] = [];
-
-    const cmd = args[0]?.toLowerCase();
-    let uids = [];
-
-    switch(cmd) {
-      case "add":
-      case "-a":
-      case "+": {
-        // যদি কোনো UID না দেওয়া হয়, গ্রুপের সব মেম্বার add করবে
-        if (args.length <= 1) {
-          const threadInfo = await api.getThreadInfo(threadID);
-          uids = threadInfo.participantIDs || [];
-        } else {
-          uids = args.slice(1).filter(x => !isNaN(x));
-        }
-
-        if (!uids.length) return message.reply(getLang("missingTIDAdd"));
-
-        const added = [];
-        const already = [];
-
-        for (const uid of uids) {
-          if (!config.whiteListThreads[threadID].includes(uid)) added.push(uid);
-          else already.push(uid);
-        }
-
-        config.whiteListThreads[threadID].push(...added);
-        writeFileSync(client.dirConfig, JSON.stringify(config, null, 2));
-
-        return message.reply(
-          (added.length ? getLang("added", added.length, added.map(uid => `├‣ ${uid}`).join("\n")) : "") +
-          (already.length ? getLang("alreadyWLT", already.length, already.map(uid => `├‣ ${uid}`).join("\n")) : "")
-        );
-      }
-
-      case "remove":
-      case "-r":
-      case "-": {
-        uids = args.slice(1).filter(x => !isNaN(x));
-        if (!uids.length) uids = [...config.whiteListThreads[threadID]]; // remove all if no args
-
-        const removed = [];
-        const notFound = [];
-
-        for (const uid of uids) {
-          if (config.whiteListThreads[threadID].includes(uid)) {
-            config.whiteListThreads[threadID] = config.whiteListThreads[threadID].filter(x => x !== uid);
-            removed.push(uid);
-          } else notFound.push(uid);
-        }
-
-        writeFileSync(client.dirConfig, JSON.stringify(config, null, 2));
-
-        return message.reply(
-          (removed.length ? getLang("removed", removed.length, removed.map(uid => `├‣ ${uid}`).join("\n")) : "") +
-          (notFound.length ? getLang("notAdded", notFound.length, notFound.map(uid => `├‣ ${uid}`).join("\n")) : "")
-        );
-      }
-
-      case "list": {
-        const list = config.whiteListThreads[threadID];
-        return message.reply(getLang("listWLTs", list.map(uid => `├‣ ${uid}`).join("\n")));
-      }
-
-      case "mode":
-      case "-m": {
-        let isNoti = false;
-        let value;
-        let index = 1;
-        if (args[1] === "noti") { isNoti = true; index = 2; }
-
-        if (args[index] === "on") value = true;
-        else if (args[index] === "off") value = false;
-        else return message.reply("⚠ Invalid argument! Use on/off");
-
-        if (isNoti) {
-          config.whiteListMode.hideNotiMessage = !value;
-          message.reply(getLang(value ? "turnedOnNoti" : "turnedOffNoti"));
-        } else {
-          config.whiteListMode.enable = value;
-          message.reply(getLang(value ? "turnedOn" : "turnedOff"));
-        }
-
-        writeFileSync(client.dirConfig, JSON.stringify(config, null, 2));
-        break;
-      }
-
-      default:
-        return;
-    }
-  }
 };
