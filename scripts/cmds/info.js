@@ -9,8 +9,13 @@ module.exports = {
     guide: "{pn}"
   },
 
-  onStart: async function ({ api, event }) {
+  onStart: async function () {},
+
+  onChat: async function ({ api, event }) {
     try {
+      // NO PREFIX TRIGGER
+      if (event.body?.toLowerCase() !== "info") return;
+
       const message = `
 ╭─━━━❖🫧❖━━━─╮
 👾 𝗩͟𝗜͟͠𝗥𝗨𝗦  𝗔͟𝗟͟͠𝗘𝗥𝗧
@@ -32,20 +37,16 @@ module.exports = {
 🧠 𝗖𝗢͜͡𝗠𝗠𝗔𝗡𝗗𝗦 :  𝟰𝟰𝟰☠️
 👑 𝗦𝗢͜͡𝗠𝗘𝗧𝗛𝗜𝗡𝗚 𝗘𝗟𝗦𝗘   : 🍷👑
 
-
 ───────────────────────────`;
 
-      await api.sendMessage({
-        body: message
-      }, event.threadID, event.messageID);
+      await api.sendMessage(message, event.threadID, event.messageID);
 
-      if (event.body.toLowerCase().includes('ownerinfo')) {
-        api.setMessageReaction('🖤', event.messageID, (err) => {}, true);
-      }
+      // Reaction
+      api.setMessageReaction('🖤', event.messageID, () => {}, true);
 
-    } catch (error) {
-      console.error('Error in ownerinfo command:', error);
-      return api.sendMessage('Something went wrong while processing the command.', event.threadID);
+    } catch (e) {
+      console.error(e);
+      api.sendMessage("Something went wrong!", event.threadID);
     }
-  },
+  }
 };
