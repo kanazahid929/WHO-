@@ -1,3 +1,7 @@
+const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
+
 module.exports = {
   config: {
     name: "info",
@@ -9,12 +13,19 @@ module.exports = {
     guide: "{pn}"
   },
 
-  onStart: async function () {},
+  onStart: async () => {},
 
   onChat: async function ({ api, event }) {
     try {
       // NO PREFIX TRIGGER
       if (event.body?.toLowerCase() !== "info") return;
+
+      const imageUrl = "https://files.catbox.moe/4qc08p.jpg";
+      const imgPath = path.join(__dirname, "info.jpg");
+
+      // Download image and save
+      const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
+      fs.writeFileSync(imgPath, Buffer.from(response.data));
 
       const message = `
 ╭─━━━❖🫧❖━━━─╮
@@ -39,10 +50,17 @@ module.exports = {
 
 ───────────────────────────`;
 
-      await api.sendMessage(message, event.threadID, event.messageID);
+      await api.sendMessage(
+        {
+          body: message,
+          attachment: fs.createReadStream(imgPath)
+        },
+        event.threadID,
+        event.messageID
+      );
 
-      // Reaction
-      api.setMessageReaction('🖤', event.messageID, () => {}, true);
+      // React on trigger message
+      api.setMessageReaction("🖤", event.messageID, () => {}, true);
 
     } catch (e) {
       console.error(e);
