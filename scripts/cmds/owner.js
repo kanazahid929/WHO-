@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = {
   config: {
     name: "owner",
-    author: "Tokodori", // Converted by GoatBot Mostakim
+    author: "Tokodori", 
     role: 0,
     shortDescription: "Show owner information",
     longDescription: "Displays information about the bot owner along with a video.",
@@ -13,8 +13,13 @@ module.exports = {
     guide: "{pn}"
   },
 
-  onStart: async function ({ api, event }) {
+  onStart: async function () {},
+
+  onChat: async function ({ api, event }) {
     try {
+      // NO PREFIX trigger
+      if (event.body?.toLowerCase() !== "owner") return;
+
       const ownerInfo = {
         name: '𓆩⟡ 👾𝗔𝗖𝗦 𝗦𝗜͜͡𝗬𝗔𝗠 𝗕𝗥𝗢 ⟡𓆪⚠️',
         gender: '𝐌𝐀𝐋𝐄👾🌪️',
@@ -31,34 +36,32 @@ module.exports = {
       const videoResponse = await axios.get(videoUrl, { responseType: 'arraybuffer' });
       const videoPath = path.join(tmpFolderPath, 'owner_video.mp4');
 
-      fs.writeFileSync(videoPath, Buffer.from(videoResponse.data, 'binary'));
+      fs.writeFileSync(videoPath, Buffer.from(videoResponse.data));
 
       const response = `
-╭────────────◊
-├─⦿ 𝐁𝐨𝐭 & 𝐎𝐰𝐧𝐞𝐫 𝐈𝐧𝐟𝐨𝐫𝐦𝐚𝐭𝐢𝐨𝐧 
-├─⦿ 𝐍𝐚𝐦𝐞: ${ownerInfo.name}
-├─⦿ 𝗩𝗶͜͡𝗿𝘂𝘀 𝗔𝗹𝗲𝗿𝘁⚡📨
-├─⦿ 𝗢𝗽𝗽͜͡𝘀𝘀𝘀 ....... 🎭
-├─⦿ 𝗙𝗮𝘃𝗼𝗿𝗶𝘁𝗲 𝘄𝗼𝗿𝗱 : 𝗘𝗿𝗼𝗼𝗿 👑📨🌪️
-├─⦿ 𝗛𝗼𝗯𝗯𝘆 : 𝗛𝗮͜͡𝟯𝗸𝗶𝗻𝗴 🎭
-├─⦿ ⚡ 𝗪͟𝗛͟͠𝗢 𝗜͟𝗔͟͠𝗠 𝘠͟𝗼͟͠𝘶 𝗵͟𝗮͟͠𝘃𝗲 𝗻͟𝗼͟͠ 𝗶͟𝗱͟͠𝗲𝗮 📨🍷
-├─⦿ 🌪️𝗳͟𝗮͟͠𝘁𝗵𝗲𝗿 𝗼͟𝗳 𝗻͟𝗼͟͠𝗯𝗶𝗻 ⚡
-├─⦿ ⁷¹³𝗟𝗢𝗔𝗗𝗜𝗡𝗚...........................👾
-├─⦿ 𝐆𝐞𝐧𝐝𝐞𝐫: ${ownerInfo.gender}
-├─⦿ 𝐍𝐢𝐜𝐤 : ${ownerInfo.nick}
-╰────────────◊
+🌪️👾 𝗢𝗪𝗡𝗘𝗥 𝗜𝗡𝗙𝗢 👾🌪️
+
+⚠️ 𝗡𝗔𝗠𝗘: ${ownerInfo.name}
+⚡ 𝗚𝗘𝗡𝗗𝗘𝗥: ${ownerInfo.gender}
+🏴‍☠ 𝗡𝗜𝗖𝗞: ${ownerInfo.nick}
+
+🖤 Video Below 👇
 `;
 
-      await api.sendMessage({
-        body: response,
-        attachment: fs.createReadStream(videoPath)
-      }, event.threadID, event.messageID);
+      await api.sendMessage(
+        {
+          body: response,
+          attachment: fs.createReadStream(videoPath)
+        },
+        event.threadID,
+        event.messageID
+      );
 
-      api.setMessageReaction('🚀', event.messageID, (err) => {}, true);
+      api.setMessageReaction("🏴", event.messageID, () => {}, true);
 
     } catch (error) {
-      console.error('Error in owner command:', error);
-      return api.sendMessage('An error occurred while processing the command.', event.threadID);
+      console.error(error);
+      api.sendMessage("❌ Return else only good siyam api .?", event.threadID);
     }
   }
 };
