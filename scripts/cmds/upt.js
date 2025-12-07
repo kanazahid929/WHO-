@@ -7,9 +7,10 @@ module.exports = {
     author: "xnil6x",
     role: 0,
     shortDescription: "Show bot uptime info",
-    longDescription: "Display stylish uptime, system stats, RAM, prefix, threads, etc.",
+    longDescription: "Display stylish uptime, system stats, RAM, threads, etc.",
     category: "system",
-    guide: "{pn}"
+    guide: "upt",
+    noPrefix: true // ✅ no-prefix mode enabled
   },
 
   onStart: async function ({ message, threadsData }) {
@@ -32,7 +33,6 @@ module.exports = {
     const freeMem = os.freemem() / 1024 / 1024;
     const usedMem = totalMem - freeMem;
 
-    const prefix = global.GoatBot.config.PREFIX || "/";
     const totalThreads = await threadsData.getAll().then(t => t.length);
     const totalCommands = global.GoatBot.commands.size;
 
@@ -49,7 +49,6 @@ module.exports = {
 ║ 🎯 𝗧𝗵𝗿𝗲𝗮𝗱𝘀      : ${totalThreads}
 ║ ‼️ 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀     : ${totalCommands}
 ║ 📨𝗡𝗼𝗱𝗲.𝗷𝘀       : ${nodeVersion}
-║ 🪄 𝗣𝗿𝗲𝗳𝗶𝘅        : ${prefix}
 ║ 👑 𝗗𝗲𝘃𝗲𝗹𝗼𝗽𝗲𝗿     : 𝗩͟𝗜͟͠𝗥𝗨𝗦𝗦 𝗶͜͡𝘆𝗮𝗺📨💤
 ╚${line}╝`;
 
