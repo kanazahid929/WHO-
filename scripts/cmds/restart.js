@@ -2,7 +2,7 @@ const fs = require("fs-extra");
 
 module.exports = {
 	config: {
-		name: "restart",
+		name: "rest",
 		version: "1.1",
 		author: "NTKhang",
 		countDown: 5,
@@ -23,7 +23,8 @@ module.exports = {
 			restartting: "🔄 | Đang khởi động lại bot..."
 		},
 		en: {
-			restartting: "🔄 | Restarting bot..."
+			restartting: "🔄 - 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴❗....................
+ 👀🍫"
 		}
 	},
 
@@ -31,7 +32,7 @@ module.exports = {
 		const pathFile = `${__dirname}/tmp/restart.txt`;
 		if (fs.existsSync(pathFile)) {
 			const [tid, time] = fs.readFileSync(pathFile, "utf-8").split(" ");
-			api.sendMessage(`✅ | Bot restarted\n⏰ | Time: ${(Date.now() - time) / 1000}s`, tid);
+			api.sendMessage(`🖤🚩 | 🔔𝗕𝗼𝘁 𝘂𝗽𝘁𝗶𝗺𝗲❗🏴\n\n🖇️🚩\n⏰ | Time: ${(Date.now() - time) / 1000}s`, tid);
 			fs.unlinkSync(pathFile);
 		}
 	},
@@ -41,5 +42,12 @@ module.exports = {
 		fs.writeFileSync(pathFile, `${event.threadID} ${Date.now()}`);
 		await message.reply(getLang("restartting"));
 		process.exit(2);
+	},
+
+	// ------------------- NO PREFIX -------------------
+	onChat: async function ({ api, event, message, getLang }) {
+		if (event.body?.toLowerCase() === "restart") {
+			return this.onStart({ message, event, getLang });
+		}
 	}
 };
