@@ -1,7 +1,7 @@
 module.exports = {
   config: {
     name: "propose",
-    version: "1.1",
+    version: "1.3",
     author: "Siyam + ChatGPT",
     role: 0,
     category: "fun",
@@ -13,35 +13,16 @@ module.exports = {
   onChat: async function ({ api, event }) {
     const text = event.body?.toLowerCase();
 
-    // ONLY trigger if message starts with "propose"
-    if (!text.startsWith("propose")) return;
+    // Trigger only on "propose"
+    if (text !== "propose") return;
 
-    // React on simple "propose"
-    if (text === "propose") {
-      api.setMessageReaction("👀", event.messageID, () => {}, true);
-      return;
-    }
+    const mentionId = Object.keys(event.mentions)[0];
 
-    // Mention Check
-    const mention = Object.keys(event.mentions)[0];
-    if (!mention)
-      return api.sendMessage("⚠️ | ভাই, যাকে প্রোপোজ করবেন তাকে Mention দিন ❤️", event.threadID, event.messageID);
-
-    const name = event.mentions[mention];
-    const tag = [{ id: mention, tag: name }];
-
-    // YOUR CUSTOM FIRST LINE ❤
-    const firstLine =
-`●───༆🌺●───༆༊🦋
-
-🐰✨𝐭𝐡𝐢𝐬
-𝐚𝐛𝐨𝐮𝐭 𝐥𝐢𝐧𝐞!-💜💭
-
-সিয়াম বস তুমি কোন মেয়েকে ভালোবাসা দিতে চাও মেনশন দাও 🌛😇`;
-
-    const messages = [
-      firstLine,
-      `🐰♡︎𝗕𝗲✨🍥𝗠𝗶𝗻𝗲-!<😻🍭!🧚‍♀️𝗜🐼-𝗪𝗶𝗹𝗹✨🍒𝗸𝗲𝗲𝗽😽𝘆𝗼𝘂-🧸💜-𝗙𝗼𝗿𝗲𝘃𝗲𝗿🌈🍒তুমি আমার সাধ্যের বাহিরে চাওয়া এক সুন্দর মানুষ।।🙂💔${name}`,
+    if (mentionId) {
+      // If someone is mentioned
+      const name = event.mentions[mentionId];
+      const tag = [{ id: mentionId, tag: name }];
+      const message =[ `🐰♡︎𝗕𝗲✨🍥𝗠𝗶𝗻𝗲-!<😻🍭!🧚‍♀️𝗜🐼-𝗪𝗶𝗹𝗹✨🍒𝗸𝗲𝗲𝗽😽𝘆𝗼𝘂-🧸💜-𝗙𝗼𝗿𝗲𝘃𝗲𝗿🌈🍒তুমি আমার সাধ্যের বাহিরে চাওয়া এক সুন্দর মানুষ।।🙂💔${name}`,
       `𝗟𝗶𝗳𝗲 𝗶𝘀 𝗯𝗲𝗮𝘂𝘁𝗶𝗳𝘂𝗹 𝗶𝗳 𝘆𝗼𝘂 𝗗𝗼𝗻𝘁 𝗙𝗮𝗹𝗹 𝗶𝗻 𝗟𝗼𝘃𝗲 ♡︎_জীবন সুন্দর যদি কারো মায়ায় না পড়ো - ${name}`,
       ` 🐰✨𝗜 𝗟𝗼𝘃𝗲 𝗨<33 𝗦𝘂𝗰𝗵 𝗔𝗻 𝗨𝗴𝗹𝘆 𝗪𝗼𝗿𝗱✨🦋 𝗦𝗵𝗼𝘂𝗹𝗱 𝗕𝗲!ᵉ_🔐💜💫_একরাশ উচ্ছ্বাসের মাঝে আমার হটাৎ থেমে যাওয়ার কারণ তুমি🌸 ${name}`,
       ` 𝗣𝗲𝗵𝗹𝗶 𝗡𝗮𝘇𝗮𝗿 𝗠𝗮𝗶𝗻 𝗞𝗮𝗶𝗦𝗔 𝗝𝗔𝗗𝘂 𝗞𝗮𝗿 𝗗𝗶𝘆𝗔 🫶${name}`,
@@ -63,10 +44,16 @@ module.exports = {
       ` 🥺💫🌧️\n\n\n\n\n\nসিয়াম বসের ভালোবাসা শেষ হয়না পাগল এগুলো সামান্য নমুনা সিয়াম বস নিঃসন্দেহে তোমাকে ভালোবাসে আর এটা‌ ছিলো সামান্য নমুনা 🥺💚💫${name}`,
     ];
 
-    messages.forEach((msg, i) => {
-      setTimeout(() => {
-        api.sendMessage({ body: msg, mentions: tag }, event.threadID);
-      }, 2000 * i);
-    });
+      api.sendMessage({ body: message, mentions: tag }, event.threadID, event.messageID);
+      api.setMessageReaction("💘", event.messageID, () => {}, true);
+    } else {
+      // If no mention
+      const message = `──༆🌺●───༆༊🦋
+
+সিয়াম বস তুমি কোন মেয়েকে ভালোবাসা দিতে চাও মেনশন দাও 🌛😇`;
+
+      api.sendMessage(message, event.threadID, event.messageID);
+      api.setMessageReaction("💌", event.messageID, () => {}, true);
+    }
   }
 };
