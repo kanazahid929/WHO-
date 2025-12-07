@@ -5,28 +5,24 @@ const path = require('path');
 module.exports = {
   config: {
     name: "owner",
-    author: "Tokodori", 
+    author: "Tokodori", // ok
     role: 0,
     shortDescription: "Show owner information",
     longDescription: "Displays information about the bot owner along with a video.",
     category: "admin",
-    guide: "{pn}"
+    guide: "{pn}",
+    usePrefix: false   // <<---- NO PREFIX ENABLED
   },
 
-  onStart: async function () {},
-
-  onChat: async function ({ api, event }) {
+  onStart: async function ({ api, event }) {
     try {
-      // NO PREFIX trigger
-      if (event.body?.toLowerCase() !== "owner") return;
-
       const ownerInfo = {
         name: '𓆩⟡ 👾𝗔𝗖𝗦 𝗦𝗜͜͡𝗬𝗔𝗠 𝗕𝗥𝗢 ⟡𓆪⚠️',
         gender: '𝐌𝐀𝐋𝐄👾🌪️',
         nick: '𝗟𝗘͜͡𝗔𝗗𝗘𝗥 𝗩𝗔͜͡𝗜 ⚠️🏴‍☠'
       };
 
-      const videoUrl = 'https://drive.google.com/uc?export=download&id=1niWY1TqTsR26HQ5ZAQuPBuycNj3wzwBT';
+      const videoUrl = 'https://drive.google.com/uc?export=download&id=1niWY1TqTsR26HQ5ZAQuPBuycNj3wzwBT';  
       const tmpFolderPath = path.join(__dirname, 'tmp');
 
       if (!fs.existsSync(tmpFolderPath)) {
@@ -36,32 +32,23 @@ module.exports = {
       const videoResponse = await axios.get(videoUrl, { responseType: 'arraybuffer' });
       const videoPath = path.join(tmpFolderPath, 'owner_video.mp4');
 
-      fs.writeFileSync(videoPath, Buffer.from(videoResponse.data));
+      fs.writeFileSync(videoPath, Buffer.from(videoResponse.data, 'binary'));
 
       const response = `
-🌪️👾 𝗢𝗪𝗡𝗘𝗥 𝗜𝗡𝗙𝗢 👾🌪️
-
-⚠️ 𝗡𝗔𝗠𝗘: ${ownerInfo.name}
-⚡ 𝗚𝗘𝗡𝗗𝗘𝗥: ${ownerInfo.gender}
-🏴‍☠ 𝗡𝗜𝗖𝗞: ${ownerInfo.nick}
-
-🖤 Video Below 👇
+Name: ${ownerInfo.name}
+Gender: ${ownerInfo.gender}
+Nick: ${ownerInfo.nick}
 `;
 
-      await api.sendMessage(
-        {
-          body: response,
-          attachment: fs.createReadStream(videoPath)
-        },
-        event.threadID,
-        event.messageID
-      );
+      api.sendMessage({
+        body: response,
+        attachment: fs.createReadStream(videoPath)
+      }, event.threadID, () => {
+        fs.unlinkSync(videoPath);
+      });
 
-      api.setMessageReaction("🏴", event.messageID, () => {}, true);
-
-    } catch (error) {
-      console.error(error);
-      api.sendMessage("❌ Return else only good siyam api .?", event.threadID);
+    } catch (e) {
+      api.sendMessage("Error fetching owner information or video.", event.threadID);
     }
   }
 };
