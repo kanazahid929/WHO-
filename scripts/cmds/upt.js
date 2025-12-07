@@ -7,49 +7,58 @@ module.exports = {
     author: "xnil6x",
     role: 0,
     category: "system",
-    guide: "upt"
+    guide: "upt",
+    noPrefix: true
   },
 
-  onChat: async function ({ message, event, threadsData }) {
+  onStart: async function ({ message, threadsData }) {
     try {
-      if (!event.body || event.body.toLowerCase() !== "upt") return;
+      const uptime = process.uptime();
+      const days = Math.floor(uptime / 86400);
+      const hours = Math.floor((uptime % 86400) / 3600);
+      const minutes = Math.floor((uptime % 3600) / 60);
+      const seconds = Math.floor(uptime % 60);
+      const uptimeString = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
-      const t = process.uptime();
-      const d = Math.floor(t / 86400);
-      const h = Math.floor((t % 86400) / 3600);
-      const m = Math.floor((t % 3600) / 60);
-      const s = Math.floor(t % 60);
-      const uptimeString = `${d}d ${h}h ${m}m ${s}s`;
-
-      const cpu = os.cpus()[0].model;
-      const cores = os.cpus().length;
-      const usedMem = (os.totalmem() - os.freemem()) / 1024 / 1024;
+      const cpu = os.cpus()[0]?.model || "Unknown CPU";
+      const cores = os.cpus()?.length || 0;
+      const platform = os.platform();
+      const arch = os.arch();
+      const nodeVersion = process.version;
+      const hostname = os.hostname();
       const totalMem = os.totalmem() / 1024 / 1024;
+      const freeMem = os.freemem() / 1024 / 1024;
+      const usedMem = totalMem - freeMem;
 
       const prefix = global.GoatBot?.config?.PREFIX || "/";
-      const totalThreads = (await threadsData.getAll()).length;
-      const totalCommands = global.GoatBot.commands.size;
+      const totalThreads = threadsData && typeof threadsData.getAll === "function"
+        ? (await threadsData.getAll()).length
+        : 0;
+      const totalCommands = global.GoatBot?.commands?.size || 0;
 
       const line = "═".repeat(40);
       const box = `
 ╔${line}╗
 ║ 🛠️  𝗨𝗽𝘁𝗶𝗺𝗲 & 𝗦𝘆𝘀𝘁𝗲𝗺 𝗦𝘁𝗮𝘁𝘀
 ╟${line}╢
-║ ⏳ Uptime     : ${uptimeString}
-║ ⚙️ CPU        : ${cpu} (${cores} cores)
-║ ⚡ RAM        : ${usedMem.toFixed(2)} / ${totalMem.toFixed(2)} MB
-║ 💾 Platform   : ${os.platform()} (${os.arch()})
-║ 🖥️ Hostname   : ${os.hostname()}
-║ 🎯 Threads    : ${totalThreads}
-║ 🧩 Commands   : ${totalCommands}
-║ 📨 Node.js    : ${process.version}
-║ 🪄 Prefix     : ${prefix}
+║ ⏳ Uptime      : ${uptimeString}
+║ ⚙️ CPU         : ${cpu} (${cores} cores)
+║ ⚡ RAM Used    : ${usedMem.toFixed(2)} MB / ${totalMem.toFixed(2)} MB
+║ 💾 Platform    : ${platform} (${arch})
+║ 🖥️ Hostname     : ${hostname}
+║ 🎯 Threads     : ${totalThreads}
+║ ‼️ Commands    : ${totalCommands}
+║ 📨 Node.js     : ${nodeVersion}
+║ 🪄 Prefix      : ${prefix}
 ╚${line}╝`;
 
-      message.reply(box);
-
+      if (typeof message.reply === "function") {
+        message.reply(box);
+      } else if (global.api) {
+        global.api.sendMessage(box, message.threadID);
+      }
     } catch (err) {
-      message.reply(`❌ Error:\n${err.message}`);
+      if (message?.reply) message.reply(`❌ Error fetching system info:\n${err.message}`);
     }
   }
 };
