@@ -4,7 +4,7 @@ module.exports = {
   config: {
     name: "atim",
     version: "3.0",
-    author: "Siyam ",
+    author: "Siyam + ChatGPT",
     role: 2,
     category: "admin",
     noPrefix: true
@@ -13,21 +13,22 @@ module.exports = {
   onStart: async function () {},
 
   onChat: async function ({ api, event }) {
-
     const text = event.body?.toLowerCase();
 
-    // ---------- REACT ON "atim" ----------
+    // ATIM শুধুমাত্র 'atim' keyword এ চলবে
+    if (!text.startsWith("atim")) return;
+
+    // React on just "atim"
     if (text === "atim") {
       api.setMessageReaction("🔥", event.messageID, () => {}, true);
       return;
     }
 
-    // ---------- WHEN USER TYPES "atim " ----------
-    if (text === "atim") {
-      return api.sendMessage("সিয়াম বস খান-/কির পোলারে একবার মেনশন দেন💚🖇️🚩!", event.threadID, event.messageID);
+    // Warn if user typed "atim sudo" without mentioning
+    if (text === "atim sudo" && Object.keys(event.mentions).length === 0) {
+      return api.sendMessage("⚠️ | সিয়াম বস খান..কির পোলারে একবার মেনশন দেন💚🖇️", event.threadID, event.messageID);
     }
 
-    // ---------- WAR MODE: MENTION FOUND ----------
     if (!isWarOn) return;
 
     const mention = Object.keys(event.mentions)[0];
@@ -79,12 +80,10 @@ module.exports = {
       `হোল কাটে নিবো মঙ্গের বেটা কার লগে লাগতে আসছিস 🤬 ${name}`,
       `নেওয়াজ এর চুদন কেমন লাগলো বাচ্চা 🤣🤣🤣🤣?? ${name}`
     ];
+
     messages.forEach((msg, i) => {
       setTimeout(() => {
-        api.sendMessage(
-          { body: msg, mentions: tag },
-          event.threadID
-        );
+        api.sendMessage({ body: msg, mentions: tag }, event.threadID);
       }, 1800 * i);
     });
   }
