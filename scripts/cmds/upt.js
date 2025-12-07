@@ -3,39 +3,43 @@ const os = require("os");
 module.exports = {
   config: {
     name: "upt",       // কমান্ডের নাম
-    version: "2.2",
+    version: "2.3",
     author: "xnil6x",
     role: 0,
     category: "system",
     guide: "upt",
-    noPrefix: true     // ✅ এখানে no-prefix চালু
+    noPrefix: true      // ✅ no-prefix চালু
   },
 
   onStart: async function ({ message, threadsData }) {
-    const uptime = process.uptime();
-    const days = Math.floor(uptime / (60 * 60 * 24));
-    const hours = Math.floor((uptime % (60 * 60 * 24)) / (60 * 60));
-    const minutes = Math.floor((uptime % (60 * 60)) / 60);
-    const seconds = Math.floor(uptime % 60);
+    try {
+      // Uptime
+      const uptime = process.uptime();
+      const days = Math.floor(uptime / (60 * 60 * 24));
+      const hours = Math.floor((uptime % (60 * 60 * 24)) / (60 * 60));
+      const minutes = Math.floor((uptime % (60 * 60)) / 60);
+      const seconds = Math.floor(uptime % 60);
+      const uptimeString = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
-    const uptimeString = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-    const cpu = os.cpus()[0].model;
-    const cores = os.cpus().length;
-    const platform = os.platform();
-    const arch = os.arch();
-    const nodeVersion = process.version;
-    const hostname = os.hostname();
+      // System info
+      const cpu = os.cpus()[0].model;
+      const cores = os.cpus().length;
+      const platform = os.platform();
+      const arch = os.arch();
+      const nodeVersion = process.version;
+      const hostname = os.hostname();
+      const totalMem = os.totalmem() / 1024 / 1024;
+      const freeMem = os.freemem() / 1024 / 1024;
+      const usedMem = totalMem - freeMem;
 
-    const totalMem = os.totalmem() / 1024 / 1024;
-    const freeMem = os.freemem() / 1024 / 1024;
-    const usedMem = totalMem - freeMem;
+      // Bot info
+      const prefix = global.GoatBot?.config?.PREFIX || "/";
+      const totalThreads = await threadsData.getAll().then(t => t.length);
+      const totalCommands = global.GoatBot.commands.size;
 
-    const prefix = global.GoatBot.config.PREFIX || "/";
-    const totalThreads = await threadsData.getAll().then(t => t.length);
-    const totalCommands = global.GoatBot.commands.size;
-
-    const line = "═".repeat(40);
-    const box = `
+      // Box design
+      const line = "═".repeat(40);
+      const box = `
 ╔${line}╗
 ║ 🛠️  𝗨𝗽𝘁𝗶𝗺𝗲 & 𝗦𝘆𝘀𝘁𝗲𝗺 𝗦𝘁𝗮𝘁𝘀
 ╟${line}╢
@@ -50,6 +54,9 @@ module.exports = {
 ║ 🪄 𝗣𝗿𝗲𝗳𝗶𝘅        : ${prefix}
 ╚${line}╝`;
 
-    message.reply(box);
+      message.reply(box);
+    } catch (err) {
+      message.reply(`❌ Error fetching system info:\n${err.message}`);
+    }
   }
 };
