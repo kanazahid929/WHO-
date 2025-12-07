@@ -1,121 +1,119 @@
+const { writeFileSync, existsSync, readFileSync } = require("fs-extra");
 const { config } = global.GoatBot;
 
 module.exports = {
   config: {
     name: "wl",
-    version: "1.0",
-    author: "rehat--",
-    countDown: 5,
+    version: "1.2",
+    author: "Rehat--",
     role: 0,
-    longDescription: {
-      en: "Add, remove, edit whiteListIds"
-    },
+    longDescription: { en: "Global and group-specific whitelist" },
     category: "owner",
-    guide: {
-      en: '   {pn} [add | -a] <uid | @tag>: Add admin role for user' +
-        '\n   {pn} [remove | -r] <uid | @tag>: Remove admin role of user' +
-        '\n   {pn} [list | -l]: List all admins' +
-        '\n   {pn} [ on | off ]: enable and disable whiteList mode'
+  },
+
+  data: {
+    globalWL: false,
+    groups: {}
+  },
+
+  onStart: async function () {
+    if (existsSync(`${__dirname}/wl_data.json`)) {
+      this.data = JSON.parse(readFileSync(`${__dirname}/wl_data.json`, "utf-8"));
     }
   },
 
-  langs: {
-    en: {
-      added: "✅ | Added whiteList role for %1 users:\n%2",
-      alreadyAdmin: "\n⚠ | %1 users already have whiteList role:\n%2",
-      missingIdAdd: "⚠ | Please enter ID or tag user to add in whiteListIds",
-      removed: "✅ | Removed whiteList role of %1 users:\n%2",
-      notAdmin: "⚠ | %1 users don't have whiteListIds role:\n%2",
-      missingIdRemove: "⚠ | Please enter ID or tag user to remove whiteListIds",
-      listAdmin: "👑 | List of whiteListIds:\n%1",
-      enable: "✅ Turned on-----𝗘͜͡𝗥𝗢𝗢𝗥 🍷🌪️\n\n____👀⚡",
-      disable: "✅ Turned off..............⚡ 𝗩͟𝗜͟͠𝗥𝗨𝗦"
-    }
+  saveData() {
+    writeFileSync(`${__dirname}/wl_data.json`, JSON.stringify(this.data, null, 2));
   },
 
-  onStart: async function ({ message, args, usersData, event, getLang, api }) {
-    const { writeFileSync } = require("fs-extra");
+  onChat: async function ({ event, message, args, usersData }) {
+    const threadID = event.threadID;
+    const senderID = event.senderID;
 
-    // ---------------- NO PREFIX ----------------
-    const body = event.body?.toLowerCase().trim();
-    const split = body.split(/\s+/);
-    const cmd = split[0]; // add, remove, list, on, off
-    args = split.slice(1);
+    // Only bot owner can use
+    if (!global.GoatBot.config.adminBot.includes(senderID)) return;
 
-    switch (cmd) {
+    // init group
+    if (!this.data.groups[threadID]) this.data.groups[threadID] = { users: [] };
+    const group = this.data.groups[threadID];
+
+    if (!args[0]) return;
+
+    switch (args[0].toLowerCase()) {
+
+      // GLOBAL WL ON
+      case "on":
+        this.data.globalWL = true;
+        this.saveData();
+        return message.reply("✅ WL mode ENABLED for ALL groups");
+
+      // GLOBAL WL OFF
+      case "off":
+        this.data.globalWL = false;
+        this.saveData();
+        return message.reply("❌ WL mode DISABLED for ALL groups");
+
+      // ADD USER TO CURRENT GROUP
       case "add":
       case "-a": {
-        if (!args[0]) return message.reply(getLang("missingIdAdd"));
         let uids = [];
         if (Object.keys(event.mentions).length > 0) uids = Object.keys(event.mentions);
         else if (event.messageReply) uids.push(event.messageReply.senderID);
-        else uids = args.filter(arg => !isNaN(arg));
+        else uids = args.slice(1).filter(x => !isNaN(x));
 
-        const notAdminIds = [];
-        const adminIds = [];
+        const added = [];
+        const already = [];
+
         for (const uid of uids) {
-          if (config.whiteListMode.whiteListIds.includes(uid)) adminIds.push(uid);
-          else notAdminIds.push(uid);
+          if (!group.users.includes(uid)) {
+            group.users.push(uid);
+            added.push(uid);
+          } else already.push(uid);
         }
 
-        config.whiteListMode.whiteListIds.push(...notAdminIds);
-        const getNames = await Promise.all(uids.map(uid => usersData.getName(uid).then(name => ({ uid, name }))));
-        writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
+        this.saveData();
+
         return message.reply(
-          (notAdminIds.length > 0 ? getLang("added", notAdminIds.length, getNames.map(({ uid, name }) => `• ${name} (${uid})`).join("\n")) : "") +
-          (adminIds.length > 0 ? getLang("alreadyAdmin", adminIds.length, adminIds.map(uid => `• ${uid}`).join("\n")) : "")
+          (added.length ? `✅ Added users in this group:\n${added.join("\n")}` : "") +
+          (already.length ? `\n⚠ Already added:\n${already.join("\n")}` : "")
         );
       }
 
+      // REMOVE USER FROM CURRENT GROUP
       case "remove":
       case "-r": {
-        if (!args[0]) return message.reply(getLang("missingIdRemove"));
         let uids = [];
         if (Object.keys(event.mentions).length > 0) uids = Object.keys(event.mentions);
         else if (event.messageReply) uids.push(event.messageReply.senderID);
-        else uids = args.filter(arg => !isNaN(arg));
+        else uids = args.slice(1).filter(x => !isNaN(x));
 
-        const notAdminIds = [];
-        const adminIds = [];
+        const removed = [];
+        const notFound = [];
+
         for (const uid of uids) {
-          if (config.whiteListMode.whiteListIds.includes(uid)) adminIds.push(uid);
-          else notAdminIds.push(uid);
+          if (group.users.includes(uid)) {
+            group.users = group.users.filter(x => x !== uid);
+            removed.push(uid);
+          } else notFound.push(uid);
         }
 
-        for (const uid of adminIds) config.whiteListMode.whiteListIds.splice(config.whiteListMode.whiteListIds.indexOf(uid), 1);
-        const getNames = await Promise.all(adminIds.map(uid => usersData.getName(uid).then(name => ({ uid, name }))));
-        writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
+        this.saveData();
+
         return message.reply(
-          (adminIds.length > 0 ? getLang("removed", adminIds.length, getNames.map(({ uid, name }) => `• ${name} (${uid})`).join("\n")) : "") +
-          (notAdminIds.length > 0 ? getLang("notAdmin", notAdminIds.length, notAdminIds.map(uid => `• ${uid}`).join("\n")) : "")
+          (removed.length ? `✅ Removed users from this group:\n${removed.join("\n")}` : "") +
+          (notFound.length ? `\n⚠ Not found:\n${notFound.join("\n")}` : "")
         );
       }
 
+      // LIST USERS IN CURRENT GROUP
       case "list":
-      case "-l": {
-        const getNames = await Promise.all(config.whiteListMode.whiteListIds.map(uid => usersData.getName(uid).then(name => ({ uid, name }))));
-        return message.reply(getLang("listAdmin", getNames.map(({ uid, name }) => `• ${name} (${uid})`).join("\n")));
-      }
-
-      case "on": {
-        config.whiteListMode.enable = true;
-        writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
-        return message.reply(getLang("enable"));
-      }
-
-      case "off": {
-        config.whiteListMode.enable = false;
-        writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
-        return message.reply(getLang("disable"));
-      }
+      case "-l":
+        return message.reply(
+          `👑 WL users in this group:\n${group.users.join("\n") || "No users added"}`
+        );
 
       default:
         return;
     }
-  },
-
-  // ------------------- NO PREFIX -------------------
-  onChat: async function (props) {
-    return this.onStart(props);
   }
 };
