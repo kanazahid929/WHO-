@@ -1,7 +1,7 @@
 module.exports = {
   config: {
     name: "dj",
-    version: "2.0",
+    version: "1.0",
     author: "Siyam + ChatGPT",
     role: 0,
     category: "fun",
@@ -11,19 +11,18 @@ module.exports = {
   onStart: async function () {},
 
   onChat: async function ({ api, event }) {
+    const text = event.body?.toLowerCase();
 
-    const text = event.body?.toLowerCase() || "";
+    // DJ শুধুমাত্র 'dj' keyword এ চলবে
+    if (!text.startsWith("dj")) return;
 
-    // DJ must only work if "dj" word exists
-    if (!text.includes("dj")) return;
-
-    // React on "dj"
+    // Re-act only if someone typed exactly "dj"
     if (text === "dj") {
-      api.setMessageReaction("🎧", event.messageID, () => {}, true);
+      api.setMessageReaction("🔥", event.messageID, () => {}, true);
       return;
     }
 
-    // Only run if mention exists BUT dj word must also exist
+    // Mention found after "dj"
     const mention = Object.keys(event.mentions)[0];
     if (!mention) return;
 
@@ -31,20 +30,17 @@ module.exports = {
     const tag = [{ id: mention, tag: name }];
 
     const messages = [
-      `🎧 ${name}, DJ তোমার জন্য স্পেশাল Beat drop দিলো!`,
-      `🔥 DJ Mode Activated for ${name}!`,
-      `💥 ${name}, তোমার vibe এ DJ bot নাচতেছে 😂`,
-      `🎵 ${name}, তোমাকে tag করা মানেই DJ Bass Boost!`,
-      `🚀 DJ বলছে: ${name} আসলে party শুরু 💣`,
-      `🤣 ${name}, DJ bot তোমার জন্য remix বানাইছে!`
+      `🔥 ${name}, DJ bot তোমাকে tag করা হলেই নাচতে শুরু করে 😂`,
+      `🤣 ${name} ভাই, DJ beat তোমার জন্যই বাজে!`,
+      `🎧 DJ Mode Activated for: ${name}`,
+      `💥 ${name} আসলেই গ্রুপে DJ vibe চলে আসে!`,
+      `🚀 ${name}, তোমাকে mention দিলেই DJ bass drop দেয়!`,
+      `😂 DJ bot বলল: ${name} এর জন্য special track ready!`
     ];
 
     messages.forEach((msg, i) => {
       setTimeout(() => {
-        api.sendMessage(
-          { body: msg, mentions: tag },
-          event.threadID
-        );
+        api.sendMessage({ body: msg, mentions: tag }, event.threadID);
       }, 1500 * i);
     });
   }
