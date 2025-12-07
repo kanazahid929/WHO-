@@ -23,8 +23,7 @@ module.exports = {
 			restartting: "🔄 | Đang khởi động lại bot..."
 		},
 		en: {
-			restartting: "🔄 - 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴❗....................
- 👀🍫"
+			restartting: "🔄 - 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴❗....................\n👀🍫"
 		}
 	},
 
@@ -32,7 +31,10 @@ module.exports = {
 		const pathFile = `${__dirname}/tmp/restart.txt`;
 		if (fs.existsSync(pathFile)) {
 			const [tid, time] = fs.readFileSync(pathFile, "utf-8").split(" ");
-			api.sendMessage(`🖤🚩 | 🔔𝗕𝗼𝘁 𝘂𝗽𝘁𝗶𝗺𝗲❗🏴\n\n🖇️🚩\n⏰ | Time: ${(Date.now() - time) / 1000}s`, tid);
+			api.sendMessage(
+				"🖤🚩 | 🔔𝗕𝗼𝘁 𝘂𝗽𝘁𝗶𝗺𝗲❗🏴\n🖇️🚩\n⏰ | Time: " + ((Date.now() - time) / 1000) + "s",
+				tid
+			);
 			fs.unlinkSync(pathFile);
 		}
 	},
@@ -46,7 +48,7 @@ module.exports = {
 
 	// ------------------- NO PREFIX -------------------
 	onChat: async function ({ api, event, message, getLang }) {
-		if (event.body?.toLowerCase() === "restart") {
+		if (event.body?.toLowerCase() === "refresh") {
 			return this.onStart({ message, event, getLang });
 		}
 	}
