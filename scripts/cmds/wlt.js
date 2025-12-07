@@ -15,11 +15,11 @@ module.exports = {
     },
     category: "owner",
     guide: {
-      en: '   {pn} [add | -a | +] [<tid>...]: Add whiteListThreadIds role for the current thread or specified thread IDs'
-        + '\n   {pn} [remove | -r | -] [<tid>...]: Remove whiteListThreadIds role from the current thread or specified thread IDs'
-        + '\n   {pn} [list | -l]: List all whiteListThreadIds'
-        + '\n   {pn} [mode | -m] <on|off>: Turn on/off whiteListThreadIds mode'
-        + '\n   {pn} [mode | -m] noti <on|off>: Turn on/off notification for non-whiteListThreadIds'
+      en: '   whitelistthread [add | -a | +] [<tid>...]: Add whiteListThreadIds role for the current thread or specified thread IDs'
+        + '\n   whitelistthread [remove | -r | -] [<tid>...]: Remove whiteListThreadIds role from the current thread or specified thread IDs'
+        + '\n   whitelistthread [list | -l]: List all whiteListThreadIds'
+        + '\n   whitelistthread [mode | -m] <on|off>: Turn on/off whiteListThreadIds mode'
+        + '\n   whitelistthread [mode | -m] noti <on|off>: Turn on/off notification for non-whiteListThreadIds'
     }
   },
 
@@ -38,6 +38,9 @@ module.exports = {
       turnedOffNoti: "❎ | Notification OFF for non-whitelisted threads"
     }
   },
+
+  // Enable no-prefix mode
+  noPrefix: true,
 
   onStart: async function ({ message, args, event, getLang, api }) {
     // Initialize whiteListThread if undefined
