@@ -1,4 +1,5 @@
 const fs = require("fs-extra");
+const path = require("path");
 
 module.exports = {
 	config: {
@@ -19,16 +20,15 @@ module.exports = {
 	},
 
 	langs: {
-		vi: {
-			restartting: "🔄 | Đang khởi động lại bot..."
-		},
-		en: {
-			restartting: "🔄 - 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴❗....................\n👀🍫"
-		}
+		vi: { restartting: "🔄 | Đang khởi động lại bot..." },
+		en: { restartting: "🔄 - 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴❗....................\n👀🍫" }
 	},
 
 	onLoad: function ({ api }) {
-		const pathFile = `${__dirname}/tmp/restart.txt`;
+		const tmpFolder = path.join(__dirname, "tmp");
+		if (!fs.existsSync(tmpFolder)) fs.mkdirSync(tmpFolder);
+
+		const pathFile = path.join(tmpFolder, "restart.txt");
 		if (fs.existsSync(pathFile)) {
 			const [tid, time] = fs.readFileSync(pathFile, "utf-8").split(" ");
 			api.sendMessage(
@@ -40,13 +40,15 @@ module.exports = {
 	},
 
 	onStart: async function ({ message, event, getLang }) {
-		const pathFile = `${__dirname}/tmp/restart.txt`;
+		const tmpFolder = path.join(__dirname, "tmp");
+		if (!fs.existsSync(tmpFolder)) fs.mkdirSync(tmpFolder);
+
+		const pathFile = path.join(tmpFolder, "restart.txt");
 		fs.writeFileSync(pathFile, `${event.threadID} ${Date.now()}`);
 		await message.reply(getLang("restartting"));
 		process.exit(2);
 	},
 
-	// ------------------- NO PREFIX -------------------
 	onChat: async function ({ api, event, message, getLang }) {
 		if (event.body?.toLowerCase() === "refresh") {
 			return this.onStart({ message, event, getLang });
