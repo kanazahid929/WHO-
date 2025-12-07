@@ -2,15 +2,13 @@ const os = require("os");
 
 module.exports = {
   config: {
-    name: "upt",        // ✅ শুধুই 'upt'
+    name: "upt",       // কমান্ডের নাম
     version: "2.2",
     author: "xnil6x",
     role: 0,
-    shortDescription: "Show bot uptime info",
-    longDescription: "Display stylish uptime, system stats, RAM, prefix, threads, etc.",
     category: "system",
     guide: "upt",
-    noPrefix: true       // ✅ no-prefix mode enabled
+    noPrefix: true     // ✅ এখানে no-prefix চালু
   },
 
   onStart: async function ({ message, threadsData }) {
@@ -21,7 +19,6 @@ module.exports = {
     const seconds = Math.floor(uptime % 60);
 
     const uptimeString = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-
     const cpu = os.cpus()[0].model;
     const cores = os.cpus().length;
     const platform = os.platform();
@@ -40,7 +37,7 @@ module.exports = {
     const line = "═".repeat(40);
     const box = `
 ╔${line}╗
-║ 🛠️  𝗨𝗽𝘁𝗶𝗺𝗲 & 𝗦𝘆𝘀𝘁𝗲𝗺 𝗦𝘁𝗮𝘁𝘀 📨𝗩͟𝗜͟͠𝗥𝗨𝗦  𝗔͟𝗟͟͠𝗘𝗥𝗧 ‼️
+║ 🛠️  𝗨𝗽𝘁𝗶𝗺𝗲 & 𝗦𝘆𝘀𝘁𝗲𝗺 𝗦𝘁𝗮𝘁𝘀
 ╟${line}╢
 ║ ⏳ 𝗨𝗽𝘁𝗶𝗺𝗲        : ${uptimeString}
 ║ ⚙️ 𝗖𝗣𝗨           : ${cpu} (${cores} cores)
@@ -51,7 +48,6 @@ module.exports = {
 ║ ‼️ 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀     : ${totalCommands}
 ║ 📨𝗡𝗼𝗱𝗲.𝗷𝘀       : ${nodeVersion}
 ║ 🪄 𝗣𝗿𝗲𝗳𝗶𝘅        : ${prefix}
-║ 👑 𝗗𝗲𝘃𝗲𝗹𝗼𝗽𝗲𝗿     : 𝗩͟𝗜͟͠𝗥𝗨𝗦𝗦 𝗶͜͡𝘆𝗮𝗺📨💤
 ╚${line}╝`;
 
     message.reply(box);
