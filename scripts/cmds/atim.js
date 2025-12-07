@@ -3,40 +3,38 @@ let isWarOn = true;
 module.exports = {
   config: {
     name: "atim",
-    aliases: ["atim"],
-    version: "1.3",
-    author: "nexo_here + fixed by Yeasin",
+    version: "3.0",
+    author: "Siyam + ChatGPT",
     role: 2,
     category: "admin",
-    guide: {
-      en: "chud @mention to attack, chud off to stop"
-    }
+    noPrefix: true
   },
 
-  onStart: async function ({ api, event, args }) {
-    const content = args.join(" ").toLowerCase();
-    const mention = Object.keys(event.mentions)[0];
+  onStart: async function () {},
 
-    // Turn off war mode
-    if (content === "off") {
-      isWarOn = false;
-      return api.sendMessage("❌ | War mode turned OFF.", event.threadID);
+  onChat: async function ({ api, event }) {
+
+    const text = event.body?.toLowerCase();
+
+    // ---------- REACT ON "atim" ----------
+    if (text === "atim") {
+      api.setMessageReaction("🔥", event.messageID, () => {}, true);
+      return;
     }
 
-    // Auto turn on if mention present and war currently off
-    if (mention && !isWarOn) {
-      isWarOn = true;
+    // ---------- WHEN USER TYPES "atim sudo" ----------
+    if (text === "atim sudo") {
+      return api.sendMessage("সিয়াম বস খান-/কির পোলারে একবার মেনশন দেন💚🖇️🚩!", event.threadID, event.messageID);
     }
 
-    // If war mode off, do nothing
+    // ---------- WAR MODE: MENTION FOUND ----------
     if (!isWarOn) return;
 
-    // Require mention to start war messages
-    if (!mention) return api.sendMessage("⚠️ | Tag someone to start war.", event.threadID);
+    const mention = Object.keys(event.mentions)[0];
+    if (!mention) return;
 
     const name = event.mentions[mention];
-    const arraytag = [{ id: mention, tag: name }];
-    const send = msg => api.sendMessage({ body: msg, mentions: arraytag }, event.threadID);
+    const tag = [{ id: mention, tag: name }];
 
     const messages = [
       `𝗟𝗢𝗔𝗗𝗜𝗡𝗚 ▓▓▓▓▓░░░░░ 99% ..\n👾🔥𝗔͟𝗖͟͠𝗧𝗜͟͠𝗩𝗘𝗗❔🍷👀\n\n███████████████ 100% 🎭⚠️𝗦𝗬͜͡𝗦͟𝗧͟͠𝗘͟𝗠 𝗟͟𝗢͟͠𝗖͟𝗞͟͠𝗘͟𝗗 ⚠️ ${name}`,
@@ -81,9 +79,13 @@ module.exports = {
       `হোল কাটে নিবো মঙ্গের বেটা কার লগে লাগতে আসছিস 🤬 ${name}`,
       `নেওয়াজ এর চুদন কেমন লাগলো বাচ্চা 🤣🤣🤣🤣?? ${name}`
     ];
-
     messages.forEach((msg, i) => {
-      setTimeout(() => send(msg), 3000 * i);
+      setTimeout(() => {
+        api.sendMessage(
+          { body: msg, mentions: tag },
+          event.threadID
+        );
+      }, 1800 * i);
     });
   }
 };
