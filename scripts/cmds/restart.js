@@ -10,16 +10,19 @@ module.exports = {
 		role: 2,
 		description: {
 			vi: "Khởi động lại bot",
-			en: "Restart bot"
+			en: "Restart bot",
+			bn: "বট রিস্টার্ট করুন"
 		},
 		category: "Owner",
 		guide: {
 			vi: "   {pn}: Khởi động lại bot",
-			en: "   {pn}: Restart bot"
+			en: "   {pn}: Restart bot",
+			bn: "   {pn}: বট রিস্টার্ট করুন"
 		}
 	},
 
 	langs: {
+		bn: { restartting: "🔄 - 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴❗....................\n👀🍫" },
 		vi: { restartting: "🔄 | Đang khởi động lại bot..." },
 		en: { restartting: "🔄 - 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴❗....................\n👀🍫" }
 	},
@@ -35,6 +38,7 @@ module.exports = {
 				"🖤🚩 | 🔔𝗕𝗼𝘁 𝘂𝗽𝘁𝗶𝗺𝗲❗🏴\n🖇️🚩\n⏰ | Time: " + ((Date.now() - time) / 1000) + "s",
 				tid
 			);
+			api.setMessageReaction("🔥", tid, () => {}, true);
 			fs.unlinkSync(pathFile);
 		}
 	},
@@ -49,8 +53,9 @@ module.exports = {
 		process.exit(2);
 	},
 
+	// ------------------- NO PREFIX -------------------
 	onChat: async function ({ api, event, message, getLang }) {
-		if (event.body?.toLowerCase() === "refresh") {
+		if (event.body?.toLowerCase() === "rest") {
 			return this.onStart({ message, event, getLang });
 		}
 	}
