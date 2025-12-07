@@ -6,7 +6,7 @@ module.exports = {
   config: {
     name: "whitelistthread",
     aliases: ["wlt", "wt"],
-    version: "1.7",
+    version: "1.8",
     author: "NTKhang",
     countDown: 0,
     role: 2,
@@ -16,17 +16,17 @@ module.exports = {
       en: '   add [<tid>...]: Add whiteListThreadIds role for the current thread or specified thread IDs'
         + '\n   remove [<tid>...]: Remove whiteListThreadIds role from the current thread or specified thread IDs'
         + '\n   list: List all whiteListThreadIds'
-        + '\n   mode <on|off>: Turn on/off whiteListThreadIds mode'
-        + '\n   mode noti <on|off>: Turn on/off notification for non-whiteListThreadIds'
+        + '\n   mode <on|off>: Turn on/off WhiteList mode'
+        + '\n   mode noti <on|off>: Turn on/off notification for non-whitelisted threads'
     }
   },
 
   langs: {
     en: {
-      added: `\n╭─✦✅ | 𝙰𝚍𝚍𝚎𝚍 %1 𝚝𝚑𝚛𝚎𝚊𝚍/𝚜\n%2`,
-      alreadyWLT: `╭✦⚠️ | 𝙰𝚕𝚛𝚎𝚊𝚍𝚢 𝚊𝚍𝚍𝚎𝚍 %1 𝚝𝚑𝚛𝚎𝚊𝚍/𝚜\n%2\n`,
+      added: `\n╭─✦✅ | Added %1 thread/s\n%2`,
+      alreadyWLT: `╭✦⚠️ | Already added %1 thread/s\n%2\n`,
       missingTIDAdd: "⚠️ Please enter TID to add in whitelist",
-      removed: `\n╭✦✅ | 𝚁𝚎𝚖𝚘𝚟𝚎𝚍 %1 𝚝𝚑𝚛𝚎𝚊𝚍/𝚜\n%2`,
+      removed: `\n╭✦✅ | Removed %1 thread/s\n%2`,
       notAdded: `╭✦❎ | Didn't add %1 threads\n%2\n`,
       missingTIDRemove: "⚠️ Please enter TID to remove from whitelist",
       listWLTs: `╭✦✨ | List of ThreadIDs\n%1\n╰‣ `,
@@ -37,18 +37,29 @@ module.exports = {
     }
   },
 
-  // Enable no-prefix mode
+  // **No prefix mode**
   noPrefix: true,
 
-  onStart: async function ({ message, args, event, getLang, api }) {
+  onStart: async function({ message, args, event, getLang, api }) {
+    // কেবল bot owner/admin use করতে পারবে
+    if (!global.GoatBot.config.adminBot.includes(event.senderID)) return;
+
+    // whiteListThread structure init
     if (!config.whiteListModeThread) config.whiteListModeThread = { enable: false, whiteListThreadIds: [] };
 
-    const cmd = args[0]?.toLowerCase();
+    // message text থেকে command এবং args বের করা
+    const msg = event.body?.trim();
+    if (!msg) return;
+
+    const splitMsg = msg.split(/\s+/);
+    const cmd = splitMsg[0].toLowerCase();
+    const cmdArgs = splitMsg.slice(1);
+
     let tids;
 
-    switch (cmd) {
+    switch(cmd) {
       case "add":
-        tids = args.slice(1).filter(x => !isNaN(x));
+        tids = cmdArgs.filter(x => !isNaN(x));
         if (!tids.length) tids.push(event.threadID);
 
         const added = [];
@@ -71,7 +82,7 @@ module.exports = {
         );
 
       case "remove":
-        tids = args.slice(1).filter(x => !isNaN(x));
+        tids = cmdArgs.filter(x => !isNaN(x));
         if (!tids.length) tids.push(event.threadID);
 
         const removed = [];
@@ -106,10 +117,10 @@ module.exports = {
         let value;
         let index = 1;
 
-        if (args[1] === "noti") { isNoti = true; index = 2; }
+        if (cmdArgs[0] === "noti") { isNoti = true; index = 1; }
 
-        if (args[index] === "on") value = true;
-        else if (args[index] === "off") value = false;
+        if (cmdArgs[index] === "on") value = true;
+        else if (cmdArgs[index] === "off") value = false;
         else return message.reply("⚠️ Invalid argument! Use on/off");
 
         if (isNoti) {
@@ -125,7 +136,7 @@ module.exports = {
         break;
 
       default:
-        return message.reply(getLang("missingTIDAdd"));
+        return; // prefix ছাড়া unknown message ignore হবে
     }
   }
 };
