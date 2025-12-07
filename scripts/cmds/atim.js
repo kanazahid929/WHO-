@@ -4,7 +4,7 @@ module.exports = {
   config: {
     name: "atim",
     version: "3.0",
-    author: "Siyam + ChatGPT",
+    author: "Siyam ",
     role: 2,
     category: "admin",
     noPrefix: true
@@ -23,7 +23,7 @@ module.exports = {
     }
 
     // ---------- WHEN USER TYPES "atim sudo" ----------
-    if (text === "atim sudo") {
+    if (text === "Atim") {
       return api.sendMessage("সিয়াম বস খান-/কির পোলারে একবার মেনশন দেন💚🖇️🚩!", event.threadID, event.messageID);
     }
 
