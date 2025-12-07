@@ -1,119 +1,142 @@
-const { writeFileSync, existsSync, readFileSync } = require("fs-extra");
 const { config } = global.GoatBot;
+const { client } = global;
+const { writeFileSync } = require("fs-extra");
 
 module.exports = {
-  config: {
-    name: "wl",
-    version: "1.2",
-    author: "Rehat--",
-    role: 0,
-    longDescription: { en: "Global and group-specific whitelist" },
-    category: "owner",
-  },
+	config: {
+		name: "whitelistthread",
+		aliases: ["wlt", "wt"],
+		version: "1.5",
+		author: "NTKhang",
+		countDown: 5,
+		role: 2,
+		description: {
+			en: "Add, remove, edit whiteListThreadIds role"
+		},
+		category: "owner",
+		guide: {
+			en: '   {pn} [add | -a | +] [<tid>...]: Add whiteListThreadIds role for the current thread or specified thread IDs'
+				+ '\n   {pn} [remove | -r | -] [<tid>...]: Remove whiteListThreadIds role from the current thread or specified thread IDs'
+				+ '\n   {pn} [list | -l]: List all whiteListThreadIds'
+				+ '\n   {pn} [mode | -m] <on|off>: Turn on/off whiteListThreadIds mode'
+				+ '\n   {pn} [mode | -m] noti <on|off>: Turn on/off notification for non-whiteListThreadIds'
+		}
+	},
 
-  data: {
-    globalWL: false,
-    groups: {}
-  },
+	langs: {
+		en: {
+			added: `\n╭─✦✅ | 𝙰𝚍𝚍𝚎𝚍 %1 𝚝𝚑𝚛𝚎𝚊𝚍/𝚜\n%2`,
+			alreadyWLT: `╭✦⚠️ | 𝙰𝚕𝚛𝚎𝚊𝚍𝚢 𝚊𝚍𝚍𝚎𝚍 %1 𝚝𝚑𝚛𝚎𝚊𝚍𝚜\n%2\n`,
+			missingTIDAdd: "⚠️ | 𝙿𝚕𝚎𝚊𝚜𝚎 𝚎𝚗𝚝𝚎𝚛 𝚃𝙸𝙳 𝚝𝚘 𝚊𝚍𝚍 𝚠𝚑𝚒𝚝𝚎𝙻𝚒𝚜𝚝𝚃𝚑𝚛𝚎𝚊𝚍 𝚛𝚘𝚕𝚎",
+			removed: `\n╭✦✅ | 𝚁𝚎𝚖𝚘𝚟𝚎𝚍 %1 𝚝𝚑𝚛𝚎𝚊𝚍/𝚜\n%2`,
+			notAdded: `╭✦❎ | 𝙳𝚒𝚍𝚗'𝚝 𝚊𝚍𝚍𝚎𝚍 %1 𝚝𝚑𝚛𝚎𝚊𝚍/𝚜\n%2\n`,
+			missingTIDRemove: "⚠️ | 𝙿𝚕𝚎𝚊𝚜𝚎 𝚎𝚗𝚝𝚎𝚛 𝚃𝙸𝙳 𝚝𝚘 𝚛𝚎𝚖𝚘𝚟𝚎 𝚠𝚑𝚒𝚝𝚎𝙻𝚒𝚜𝚝𝚃𝚑𝚛𝚎𝚊𝚍 𝚛𝚘𝚕𝚎",
+			listWLTs: `╭✦✨ | 𝙻𝚒𝚜𝚝 𝚘𝚏 𝚃𝚑𝚛𝚎𝚊𝚍𝙸𝚍𝚜\n%1\n╰‣ `,
+			turnedOn: "✅ | 𝚃𝚞𝚛𝚗𝚎𝚍 𝚘𝚗 𝚝𝚑𝚎 𝚖𝚘𝚍𝚎 𝚘𝚗𝚕𝚢 𝚠𝚑𝚒𝚝𝚎𝙻𝚒𝚜𝚝𝚃𝚑𝚛𝚎𝚊𝚍𝙸𝚍𝚜 𝚌𝚊𝚗 𝚞𝚜𝚎 𝚋𝚘𝚝",
+			turnedOff: "❎ | 𝚃𝚞𝚛𝚗𝚎𝚍 𝚘𝚏𝚏 𝚝𝚑𝚎 𝚖𝚘𝚍𝚎 𝚘𝚗𝚕𝚢 𝚠𝚑𝚒𝚝𝚎𝙻𝚒𝚜𝚝𝚃𝚑𝚛𝚎𝚊𝚍𝙸𝚍𝚜 𝚌𝚊𝚗 𝚞𝚜𝚎 𝚋𝚘𝚝",
+			turnedOnNoti: "✅ | 𝚃𝚞𝚛𝚗𝚎𝚍 𝚘𝚗 𝚝𝚑𝚎 𝚗𝚘𝚝𝚒𝚏𝚒𝚌𝚊𝚝𝚒𝚘𝚗 𝚠𝚑𝚎𝚗 𝚝𝚑𝚛𝚎𝚊𝚍 𝚒𝚜 𝚗𝚘𝚝 𝚠𝚑𝚒𝚝𝚎𝙻𝚒𝚜𝚝𝚃𝚑𝚛𝚎𝚊𝚍𝙸𝚍𝚜",
+			turnedOffNoti: "❎ | 𝚃𝚞𝚛𝚗𝚎𝚍 𝚘𝚏𝚏 𝚝𝚑𝚎 𝚗𝚘𝚝𝚒𝚏𝚒𝚌𝚊𝚝𝚒𝚘𝚗 𝚠𝚑𝚎𝚗 𝚝𝚑𝚛𝚎𝚊𝚍 𝚒𝚜 𝚗𝚘𝚝 𝚠𝚑𝚒𝚝𝚎𝙻𝚒𝚜𝚝𝚃𝚑𝚛𝚎𝚊𝚍𝙸𝚍𝚜"
+		}
+	},
 
-  onStart: async function () {
-    if (existsSync(`${__dirname}/wl_data.json`)) {
-      this.data = JSON.parse(readFileSync(`${__dirname}/wl_data.json`, "utf-8"));
-    }
-  },
+	onStart: async function ({ message, args, event, getLang, api }) {
+		switch (args[0]) {
+			case "add":
+			case "-a":
+			case "+": {
+				let tids = args.slice(1).filter(arg => !isNaN(arg));
+				if (tids.length <= 0) {
+					tids.push(event.threadID);
+				}
+				const notWLTIDs = [];
+				const threadIDs = [];
+				for (const tid of tids) {
+					if (config.whiteListModeThread.whiteListThreadIds.includes(tid))
+						threadIDs.push(tid);
+					else
+						notWLTIDs.push(tid);
+				}
+				config.whiteListModeThread.whiteListThreadIds.push(...notWLTIDs);
+				const getNames = await Promise.all(tids.map(async tid => {
+					const d = await api.getThreadInfo(tid) || {}
+	const threadName = d.threadName || "Not found";
+					return { tid, name: threadName };
+				}));
+				writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
+				return message.reply(
+					(notWLTIDs.length > 0 ? getLang("added", notWLTIDs.length, getNames.filter(({ tid }) => notWLTIDs.includes(tid)).map(({ tid, name }) => `├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙽𝙰𝙼𝙴: ${name}\n╰‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: ${tid}`).join("\n")) : "")
+					+ (threadIDs.length > 0 ? getLang("alreadyWLT", threadIDs.length, threadIDs.map(tid => `╰‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: ${tid}`).join("\n")) : "")
+				);
+			}
+			case "remove":
+			case "rm":
+			case "-r":
+			case "-": {
+				let tids = args.slice(1).filter(arg => !isNaN(arg));
+				if (tids.length <= 0) {
+					tids.push(event.threadID);
+				}
+				const notWLTIDs = [];
+				const threadIDs = [];
+				for (const tid of tids) {
+					if (config.whiteListModeThread.whiteListThreadIds.includes(tid))
+						threadIDs.push(tid);
+					else
+						notWLTIDs.push(tid);
+				}
+				for (const tid of threadIDs)
+					config.whiteListModeThread.whiteListThreadIds.splice(config.whiteListModeThread.whiteListThreadIds.indexOf(tid), 1);
+				const getNames = await Promise.all(threadIDs.map(async tid => {
+					const d = await api.getThreadInfo(tid) || {}
+const threadName = d.threadName || "Not found";
+					return { tid, name: threadName };
+				}));
+				writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
+				return message.reply(
+					(threadIDs.length > 0 ? getLang("removed", threadIDs.length, getNames.map(({ tid, name }) => `├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙽𝙰𝙼𝙴: ${name}\n╰‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: ${tid}`).join("\n")) : "")
+					+ (notWLTIDs.length > 0 ? getLang("notAdded", notWLTIDs.length, notWLTIDs.map(tid => `╰‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: ${tid}`).join("\n")) : "")
+				);
+			}
+			case "list":
+			case "-l": {
+				const getNames = await Promise.all(config.whiteListModeThread.whiteListThreadIds.map(async tid => {
+					const t = await api.getThreadInfo(tid) || {}
+	const threadName = t.threadName || "Unfetched";
+					return { tid, name: threadName };
+				}));
+				return message.reply(getLang("listWLTs", getNames.map(({ tid, name }) => `├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙽𝙰𝙼𝙴: ${name}\n├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: ${tid}`).join("\n")));
+			}
+			case "mode":
+			case "m":
+			case "-m": {
+				let isSetNoti = false;
+				let value;
+				let indexGetVal = 1;
 
-  saveData() {
-    writeFileSync(`${__dirname}/wl_data.json`, JSON.stringify(this.data, null, 2));
-  },
+				if (args[1] == "noti") {
+					isSetNoti = true;
+					indexGetVal = 2;
+				}
 
-  onChat: async function ({ event, message, args, usersData }) {
-    const threadID = event.threadID;
-    const senderID = event.senderID;
+				if (args[indexGetVal] == "on")
+					value = true;
+				else if (args[indexGetVal] == "off")
+					value = false;
 
-    // Only bot owner can use
-    if (!global.GoatBot.config.adminBot.includes(senderID)) return;
+				if (isSetNoti) {
+					config.hideNotiMessage.whiteListModeThread = !value;
+					message.reply(getLang(value ? "turnedOnNoti" : "turnedOffNoti"));
+				}
+				else {
+					config.whiteListModeThread.enable = value;
+					message.reply(getLang(value ? "turnedOn" : "turnedOff"));
+				}
 
-    // init group
-    if (!this.data.groups[threadID]) this.data.groups[threadID] = { users: [] };
-    const group = this.data.groups[threadID];
-
-    if (!args[0]) return;
-
-    switch (args[0].toLowerCase()) {
-
-      // GLOBAL WL ON
-      case "on":
-        this.data.globalWL = true;
-        this.saveData();
-        return message.reply("✅ WL mode ENABLED for ALL groups");
-
-      // GLOBAL WL OFF
-      case "off":
-        this.data.globalWL = false;
-        this.saveData();
-        return message.reply("❌ WL mode DISABLED for ALL groups");
-
-      // ADD USER TO CURRENT GROUP
-      case "add":
-      case "-a": {
-        let uids = [];
-        if (Object.keys(event.mentions).length > 0) uids = Object.keys(event.mentions);
-        else if (event.messageReply) uids.push(event.messageReply.senderID);
-        else uids = args.slice(1).filter(x => !isNaN(x));
-
-        const added = [];
-        const already = [];
-
-        for (const uid of uids) {
-          if (!group.users.includes(uid)) {
-            group.users.push(uid);
-            added.push(uid);
-          } else already.push(uid);
-        }
-
-        this.saveData();
-
-        return message.reply(
-          (added.length ? `✅ Added users in this group:\n${added.join("\n")}` : "") +
-          (already.length ? `\n⚠ Already added:\n${already.join("\n")}` : "")
-        );
-      }
-
-      // REMOVE USER FROM CURRENT GROUP
-      case "remove":
-      case "-r": {
-        let uids = [];
-        if (Object.keys(event.mentions).length > 0) uids = Object.keys(event.mentions);
-        else if (event.messageReply) uids.push(event.messageReply.senderID);
-        else uids = args.slice(1).filter(x => !isNaN(x));
-
-        const removed = [];
-        const notFound = [];
-
-        for (const uid of uids) {
-          if (group.users.includes(uid)) {
-            group.users = group.users.filter(x => x !== uid);
-            removed.push(uid);
-          } else notFound.push(uid);
-        }
-
-        this.saveData();
-
-        return message.reply(
-          (removed.length ? `✅ Removed users from this group:\n${removed.join("\n")}` : "") +
-          (notFound.length ? `\n⚠ Not found:\n${notFound.join("\n")}` : "")
-        );
-      }
-
-      // LIST USERS IN CURRENT GROUP
-      case "list":
-      case "-l":
-        return message.reply(
-          `👑 WL users in this group:\n${group.users.join("\n") || "No users added"}`
-        );
-
-      default:
-        return;
-    }
-  }
+				writeFileSync(client.dirConfig, JSON.stringify(config, null, 2));
+				break;
+			}
+			default:
+				return message.reply(getLang("missingTIDAdd"));
+		}
+	}
 };
