@@ -1,7 +1,7 @@
 module.exports = {
   config: {
     name: "propose",
-    version: "1.4",
+    version: "1.5",
     author: "Siyam + ChatGPT",
     role: 0,
     category: "fun",
@@ -16,7 +16,7 @@ module.exports = {
     // Trigger only on "propose"
     if (text !== "propose") return;
 
-    const mentionId = Object.keys(event.mentions)[0];
+    const mentionId = Object.keys(event.mentions || {})[0];
 
     if (mentionId) {
       // If someone is mentioned
@@ -26,7 +26,7 @@ module.exports = {
       const messages = [
         `🐰♡︎𝗕𝗲✨🍥𝗠𝗶𝗻𝗲-!<😻🍭!🧚‍♀️𝗜🐼-𝗪𝗶𝗹𝗹✨🍒𝗸𝗲𝗲𝗽😽𝘆𝗼𝘂-🧸💜-𝗙𝗼𝗿𝗲𝘃𝗲𝗿🌈🍒তুমি আমার সাধ্যের বাহিরে চাওয়া এক সুন্দর মানুষ।।🙂💔${name}`,
         `𝗟𝗶𝗳𝗲 𝗶𝘀 𝗯𝗲𝗮𝘂𝘁𝗶𝗳𝘂𝗹 𝗶𝗳 𝘆𝗼𝘂 𝗗𝗼𝗻𝗧 𝗙𝗮𝗹𝗹 𝗶𝗻 𝗟𝗼𝘃𝗲 ♡︎_জীবন সুন্দর যদি কারো মায়ায় না পড়ো - ${name}`,
-        `🐰✨𝗜 𝗟𝗼𝘃𝗲 𝗨<33 𝗦𝘂𝗰𝗵 𝗔𝗻 𝗨𝗴𝗹𝘆 𝗪𝗼𝗿𝗱✨🦋 𝗦𝗵𝗼𝘂𝗹𝗱 𝗕𝗲!ᵉ_🔐💜💫_একরাশ উচ্ছ্বাসের মাঝে আমার হটাৎ থেমে যাওয়ার কারণ তুমি🌸 ${name}`,
+        `🐰✨𝗜 𝗟𝗼𝘃𝗲 𝗨<33 𝗦𝘂𝗰𝗵 𝗔𝗻 𝗨𝗴𝗹𝘆 𝗪𝗼𝗿𝗱✨🦋 𝗦𝗵𝗼𝘂𝗹𝗱 𝗕𝗲! এ একরাশ উচ্ছ্বাসের মাঝে আমার হটাৎ থেমে যাওয়ার কারণ তুমি🌸 ${name}`,
         ` 𝗣𝗲𝗵𝗹𝗶 𝗡𝗮𝘇𝗮𝗿 𝗠𝗮𝗶𝗻 𝗞𝗮𝗶𝗦𝗔 𝗝𝗔𝗗𝘜 𝗞𝗮𝗿 𝗗𝗶𝘆𝗔 🫶${name}`,
         `!!লাইন টা তুমার জন্য  ডুবেছি আমি তুমার প্রেমের অনন্ত মায়ায় 🙈 🌸${name}`,
         `সিয়াম বসের ভালোবাসা শেষ হয়না পাগল এগুলো সামান্য নমুনা 🥺💚💫${name}`
