@@ -22,8 +22,8 @@ module.exports = {
       return;
     }
 
-    // ---------- WHEN USER TYPES "atim sudo" ----------
-    if (text === "Atim") {
+    // ---------- WHEN USER TYPES "atim " ----------
+    if (text === "atim") {
       return api.sendMessage("সিয়াম বস খান-/কির পোলারে একবার মেনশন দেন💚🖇️🚩!", event.threadID, event.messageID);
     }
 
