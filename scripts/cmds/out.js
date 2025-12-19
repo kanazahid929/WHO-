@@ -1,24 +1,34 @@
 module.exports = {
- config: {
- name: "out",
- author: "xnil",
- role: 2, 
- shortDescription: "Make the bot leave the group",
- category: "admin",
- guide: "{pn}"
- },
+	config: {
+		name: "o",
+		author: "xnil",
+		role: 2,
+		category: "admin",
+		description: "Bot leaves the group when 'o' is typed"
+	},
 
- onStart: async function ({ api, event }) {
- const threadID = event.threadID;
+	// Required by framework
+	onStart: async function () {},
 
- // Check if it's a group chat
- const threadInfo = await api.getThreadInfo(threadID);
- if (!threadInfo.isGroup) {
- return api.sendMessage("❌ This command can only be used in group chats.", threadID);
- }
+	// No-prefix listener
+	onChat: async function ({ api, event }) {
+		if (!event.body) return;
+		if (event.body.toLowerCase() !== "o") return;
 
- await api.sendMessage("👋 Goodbye! I'm leaving this group now...", threadID, () => {
- api.removeUserFromGroup(api.getCurrentUserID(), threadID);
- });
- }
+		const threadID = event.threadID;
+
+		const threadInfo = await api.getThreadInfo(threadID);
+		if (!threadInfo.isGroup) {
+			return api.sendMessage(
+				"❌ This command only works in group chats.",
+				threadID
+			);
+		}
+
+		await api.sendMessage(
+			"╭•┄┅════❁🌺❁════┅┄•╮\n❗🚨𝐆𝐨𝐨𝐝 𝐧𝐢𝐠𝐡𝐭 💤💋 📢\n╰•┄┅════❁🌺❁════┅┄•╯",
+			threadID,
+			() => api.removeUserFromGroup(api.getCurrentUserID(), threadID)
+		);
+	}
 };
