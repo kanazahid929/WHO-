@@ -1,83 +1,92 @@
-const axios = require("axios");
-const fs = require("fs-extra");
-const request = require("request");
-const path = require("path");
-
-module.exports = {
-  config: {
-    name: "ig51",
-    version: "1.3",
-    author: "si52m",
-    countDown: 5,
-    role: 0,
-    shortDescription: "Random Caption + Picture",
-    longDescription: "Sends a random styled quote with a random image",
-    category: "fun",
-    guide: "{prefix}ig or /",
-    usePrefix: false
-  },
-
-  onStart: async function ({ api, event }) {
-    return sendQuoteWithImage(api, event);
-  },
-
-  onChat: async function ({ api, event }) {
-    const body = event.body?.toLowerCase().trim();
-    if (body === "/" || body === "/") {
-      return sendQuoteWithImage(api, event);
-    }
-  }
-};
-
-
-function getRandomQuote() {
-  const quotes = [
-    "=== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===\n--❖-- 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊ --❖--\n✢━━━━━━━━━━━━━━━✢\n\n- জীবনে এমন বন্ধু থাকা দরকার,\n- যেনো বিপদে আপদে পাশে পাওয়া যায়..!❤️🥀\n\n✢━━━━━━━━━━━━━━━✢\n𝐂𝐫𝐞𝐚𝐭𝐨𝐫 : 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊",
-    "=== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===\n--❖-- 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊ --❖--\n✢━━━━━━━━━━━━━━━✢\n\n- শখের বয়সে টাকার অভাব থাকে 🙂💔\n- তখন পাশে নারী ওহ্ থাকে না 😅\n\n✢━━━━━━━━━━━━━━━✢\n𝐂𝐫𝐞𝐚𝐭𝐨𝐫 : 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊",
-    "=== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===\n--❖-- 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊ --❖--\n✢━━━━━━━━━━━━━━━✢\n\n- প্রিয় মানুষটার কথা ভাবতে ভাবতে\n- হঠাৎ হেসে ফেলার অনুভূতি টা সুন্দর!'🖤🌸\n\n✢━━━━━━━━━━━━━━━✢\n𝐂𝐫𝐞𝐚𝐭𝐨𝐫 : 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊",
-    "=== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===\n--❖-- 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊❖--\n✢━━━━━━━━━━━━━━━✢\n\n- মন থেকে ভালোবাসা পূর্ণতা পাক 💖\n- নাটকীয় ভালোবাসা থেকে মানুষ মুক্তি পাক!🙂🌸✨\n\n✢━━━━━━━━━━━━━━━✢\n𝐂𝐫𝐞𝐚𝐭𝐨𝐫 : 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊",
-    "=== 「𝗠𝗼𝘁𝗶𝘃𝗮𝘁𝗶𝗼𝗻」 ===\n--❖-- 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊❖--\n✢━━━━━━━━━━━━━━━✢\n\n- কখনো হাল ছেড়ো না 💪\n- জীবন কঠিন হলেও লড়াই চালিয়ে যাও 🌟\n\n✢━━━━━━━━━━━━━━━✢\n𝐂𝐫𝐞𝐚𝐭𝐨𝐫 : 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊",
-    "=== 「𝗜𝘀𝗹𝗮𝗺𝗶𝗰」 ===\n--❖-- 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊ --❖--\n✢━━━━━━━━━━━━━━━✢\n\n- দোয়া মানুষের নিয়তি পরিবর্তন করতে পারে 🕋\n- তাই দোয়া করতে ভুলবে না 🤲\n\n✢━━━━━━━━━━━━━━━✢\n𝐂𝐫𝐞𝐚𝐭𝐨𝐫 : 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊",
-    "=== 「𝗟𝗼𝘃𝗲」 ===\n--❖-- 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊ --❖--\n✢━━━━━━━━━━━━━━━✢\n\n- তোমার হাসিটাই আমার সুখ 💖\n- তুমি পাশে থাকলেই সবকিছু সুন্দর লাগে 🌸\n\n✢━━━━━━━━━━━━━━━✢\n𝐂𝐫𝐞𝐚𝐭𝐨𝐫 : 𝗦𝗶͜͡𝘆𝗮𝗺⚡𝗩͟𝗜͟͠𝗥𝗨𝗦👾🚩───◊"
-  ];
-  return quotes[Math.floor(Math.random() * quotes.length)];
-}
-
-
-function getRandomImageURL() {
-  const images = [
-    "https://i.postimg.cc/L4Cx5RKH/9e67645f927eaae0ba18f19b05622eac.jpg",
-    "https://i.postimg.cc/7YXT11nD/780eb0e434ce5ca92e863a92e6cb27cf.jpg",
-    "https://i.postimg.cc/1Xsfw4gf/2d1bcd832d2efb496e53cb45190e5325.jpg",
-    "https://i.postimg.cc/ryjp7V0N/58137f27ceebf0482a58875d6ded3c1c.jpg",
-    "https://i.postimg.cc/KvVmyRZB/1552cbe4d268c5f3a92f8ce0188f9fe7.jpg",
-    "https://i.postimg.cc/L5WFRbM2/b68323d41ab7df1274342dd194292ede.jpg",
-    "https://i.postimg.cc/nLxbHmNj/456ed64f3c38f3008f5f30f678563409.jpg",
-    "https://i.postimg.cc/KYxwX2gt/95bf51e4d462707bf1557bbc47694849.jpg",
-    "https://i.postimg.cc/g2mbpRCw/2bb146f811030e9a91b6654ac23101d1.jpg",
-    "https://i.postimg.cc/tRxKV2yZ/98b0af95a9349c7705b7febf884e2fad.jpg",
-    "https://i.postimg.cc/rwQ3LHGb/d13da3cb14a9630bf859795c26a2c972.jpg"
-  ];
-  return images[Math.floor(Math.random() * images.length)];
-}
-
-
-async function sendQuoteWithImage(api, event) {
-  const quote = getRandomQuote();
-  const imageUrl = getRandomImageURL();
-  const imgPath = path.join(__dirname, "cache", `start_img_${Date.now()}.jpg`);
-
-  fs.ensureDirSync(path.join(__dirname, "cache"));
-
-  await new Promise((resolve, reject) => {
-    request(imageUrl)
-      .pipe(fs.createWriteStream(imgPath))
-      .on("finish", resolve)
-      .on("error", reject);
-  });
-
-  api.sendMessage({
-    body: quote,
-    attachment: fs.createReadStream(imgPath)
-  }, event.threadID, () => fs.unlinkSync(imgPath));
-  }
+‎const axios = require("axios");
+‎const fs = require("fs-extra");
+‎const request = require("request");
+‎const path = require("path");
+‎
+‎module.exports = {
+‎  config: {
+‎    name: "ig51",
+‎    version: "1.3",
+‎    author: "si52m",
+‎    countDown: 5,
+‎    role: 0,
+‎    shortDescription: "Random Caption + Picture",
+‎    longDescription: "Sends a random styled quote with a random image",
+‎    category: "fun",
+‎    guide: "{prefix}ig or /",
+‎    usePrefix: false
+‎  },
+‎
+‎  onStart: async function ({ api, event }) {
+‎    return sendQuoteWithImage(api, event);
+‎  },
+‎
+‎  onChat: async function ({ api, event }) {
+‎    const body = event.body?.toLowerCase().trim();
+‎    if (body === "/" || body === "/") {
+‎      return sendQuoteWithImage(api, event);
+‎    }
+‎  }
+‎};
+‎
+‎
+‎function getRandomQuote() {
+‎  const quotes = [
+‎  "=「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n✢━━━━━━━━━━━━━━━✢••🌼 𝐚𝐛𝐨𝐮𝐭 𝐭𝐡𝐢𝐬 𝐥𝐢𝐧𝐞,🙂🌿\n\n__🖤🦋দিন শেষে সূর্যটাও বুঝিয়ে দেয় সময় শেষ হলে স্থাঁন পরিবর্তন হয়..!!🥰💫🌼🦋\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n\n✢━━━━━━━━━━━━━━━✢",
+    "==== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n\n✢━━━━━━━━━━━━━━━✢༉༎🧸🍒𝗬𝗼𝘂 𝗺𝘂𝘀𝘁 𝗯𝗲 𝗹𝗶𝗸𝗲 𝘁𝗵𝗲 90𝘀 𝗶𝗻 𝘁𝗵𝗲 𝗰𝗿𝗼𝘄𝗱 𝗼𝗳 𝘁𝗵𝗶𝘂𝘀𝗮𝗻𝗱𝘀 𝗼𝗳 𝗽𝗲𝗼𝗽𝗹𝗲 𝘄𝗵𝗼 𝘄𝗶𝗹𝗹 𝗸𝗲𝗲𝗽 𝗮𝗻 𝗲𝘆𝗲 𝗼𝗻 𝗺𝗲-)🩷🍒🐼✨🌈-!!\n\n_>!!..🖤🔐😽'তুমি'টা হতে হবে নব্বই দশকের মতো হাজার মানুষের ভিড়ে যার নজর থাকবে আমার দিকে>-/🙃🦋\n\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n\n✢━━━━━━━━━━━━━━━✢=",
+"=== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n\n✢━━━━━━━━━━━━━━━✢༉༎🧸🍒𝗬𝗼𝘂 𝗺𝘂𝘀𝘁 𝗯𝗲 𝗹𝗶𝗸𝗲 𝘁𝗵𝗲 90𝘀 𝗶𝗻 𝘁𝗵𝗲 𝗰𝗿𝗼𝘄𝗱 𝗼𝗳 𝘁𝗵𝗶𝘂𝘀𝗮𝗻𝗱𝘀 𝗼𝗳 𝗽𝗲𝗼𝗽𝗹𝗲 𝘄𝗵𝗼 𝘄𝗶𝗹𝗹 𝗸𝗲𝗲𝗽 𝗮𝗻 𝗲𝘆𝗲 𝗼𝗻 𝗺𝗲-)🩷🍒🐼✨🌈-!!\n\n_>!!..🖤🔐😽'তুমি'টা হতে হবে নব্বই দশকের মতো হাজার মানুষের ভিড়ে যার নজর থাকবে আমার দিকে>-/🙃🦋\n\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n\n✢━━━━━━━━━━━━━━━✢",
+"=== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n\n✢━━━━━━━━━━━━━━━✢🪄!< 𝘿𝙤𝙣'𝙩 💝𝘽𝙚𝙇𝙡𝙚𝙫𝙀🌈🌠𝙞𝙉 𝙏𝙚𝙈𝙥𝙤𝙧𝘼𝙧𝙔 𝙏𝙝𝙄𝙣𝙂𝙨<\n\n_সম্পর্কটা কিছুদিনের হলেও🐰🍒\n\n_তাকে ছাড়া প্রতিটা মুহূর্ত খুব শূন্য লাগে! >)🌧️🖤-••🦋🌼\n\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n\n✢━━━━━━━━━━━━━━━✢",
+"=== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n\n\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n\n✢━━━━━━━━━━━━━━━✢🦋🤍 𝐀𝐠𝐞 𝐰𝐢𝐥𝐥 𝐢𝐧𝐜𝐫𝐞𝐚𝐬𝐞, 𝐭𝐡𝐞 𝐥𝐢𝐬𝐭 𝐨𝐟 𝐥𝐨𝐬𝐢𝐧𝐠 𝐰𝐢𝐥𝐥 𝐛𝐞 𝐥𝐨𝐧𝐠, 𝐭𝐡𝐨𝐬𝐞 𝐰𝐢𝐭𝐡 𝐰𝐡𝐨𝐦 𝐭𝐡𝐞𝐲 𝐰𝐞𝐫𝐞 𝐬𝐮𝐩𝐩𝐨𝐬𝐞𝐝 𝐭𝐨 𝐛𝐞 𝐰𝐢𝐥𝐥 𝐚𝐥𝐬𝐨 𝐛𝐞 𝐥𝐨𝐬𝐭.....🖤🌸✨\n\n🌊💚☔বয়স বাড়বে, হারানোর তালিকা দীর্ঘ হবে, যাদের সাথে থাকার কথা ছিলো তারাও হারিয়ে যাবে,\n\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n✢━━━━━━━━━━━━━━━✢",
+"= 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n\n\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n✢━━━━━━━━━━━━━━━✢𝗧𝗵𝗲 𝗴𝗲𝗻𝘁𝗹𝗲 𝘀𝗰𝗲𝗻𝘁 𝗼𝗳 𝗺𝗼𝘁𝗵𝗲𝗿𝘀 𝗳𝗿𝗶𝗻𝗴𝗲 𝗕𝗲𝗮𝘁𝘀 𝘁𝗵𝗼𝘂𝘀𝗮𝗻𝗱𝘀 𝗼𝗳 𝗽𝗲𝗿𝗳𝘂𝗺𝗲𝘀-!!🙂💖🍒\n\n༎彡🔐✨🍓মায়ের আচঁলের স্নিগ্ধ ঘ্রান\n\n হাজারো পারফিউমকেও হার মানায়-!!😻💘\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n\n✢━━━━━━━━━━━━━━━",
+"== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n✢━━━━━━━━━━━━━━━✢🐰💚𝗜𝗻 𝘁𝗵𝗶𝘀 𝗖𝗶𝘁𝘆 𝗣𝗲𝗼𝗽𝗹𝗲 𝗗𝗼𝗻𝘁💜🍬 \n___🖇️𝗨𝗻𝗱𝗲𝗿𝘀𝘁𝗮𝗻𝗱 𝗘𝗺𝗼𝘁𝗶𝗼𝗻𝘀🐲𝗧𝗵𝗲𝘆 𝗢𝗡𝗹𝘆 𝗹𝗼𝗼𝗸 𝗳𝗼𝗿 𝗕𝗲𝗮𝘂𝘁𝘆:-)🌼🍒✨\n\n🐹-!<—এই শহরে মানুষ গুলো আবেগ বুঝেনা খোঁজে শুধু সৌন্দর্য.!:>3💜🐰🥺\n\n\n༊_۵༎-𝐂-𝐄-𝐎 🩷⃝✨ [𝐒𝐄𝐘𝐀𝐌]🌼\n\n\n✢━━━━━━━━━━━━━━━✢",
+"=== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n✢━━━━━━━━━━━━━━━✢𝐓𝐡𝐨𝐬𝐞 𝐟𝐞𝐞𝐥𝐢𝐧𝐠𝐬 𝐚𝐫𝐞 𝐧𝐨𝐭 𝐞𝐱𝐩𝐫𝐞𝐬𝐬𝐞𝐝..🤍🌸\n– 𝐍𝐨𝐭 𝐚 𝐛𝐢𝐭 𝐩𝐞𝐫𝐬𝐨𝐧𝐚𝐥…🥺 .💥🐰🙂\n\n—সব অনুভূতি হয়না প্রকাশিত। 🙂 ❤︎ —থাক না কিছুটা ব্যক্তিগত-:)🦋🥺\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n\n✢━━━━━━━━━━━━━━━",
+"== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n✢━━━━━━━━━━━━━━━✢-𝙒𝙞𝙨𝙝𝙚𝙨 𝙩𝙝𝙖𝙩 𝙘𝙖𝙣 𝙣𝙚𝙫𝙚𝙧 𝙗𝙚 𝙛𝙪𝙡𝙛𝙞𝙡𝙡𝙚𝙙 𝙏𝙝𝙚 𝙢𝙞𝙣𝙙 𝙞𝙨 𝙖𝙡𝙬𝙖𝙮𝙨 𝙤𝙣 𝙩𝙝𝙖𝙩.🙂🧡✨\n\n🐰!<— ❝“যে ইচ্ছেগুলো কখনোই পূরন হবার নামনটা সবসময় সেটা নিয়েই পড়ে থাকে” ❞ -!!-) 🙃🥀🌻\n\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n\n✢━━━━━━━━━━━━━━━✢",
+"== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n\n✢━━━━━━━━━━━━━━━✢🌼💛- 𝙏𝙝𝙚 𝙢𝙤𝙧𝙚 𝙗𝙚𝙖𝙪𝙩𝙞𝙛𝙪𝙡 𝙩𝙝𝙚 𝙩𝙝𝙤𝙪𝙜𝙝𝙩𝙨. 𝙏𝙝𝙚 𝙢𝙤𝙧𝙚 𝙗𝙚𝙖𝙪𝙩𝙞𝙛𝙪𝙡 𝙩𝙝𝙚 𝙥𝙚𝙤𝙥𝙡𝙚----💟💙\n\n- 🦋“যার ভাবনা যত সুন্দর; সে মানুষ হিসেবে তত বেশী  সুন্দর”😻🌼💚\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n✢━━━━━━━━━━━━━━━",
+"= 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n✢━━━━━━━━━━━━━━━✢😽🐰🌼-𝐓𝐡𝐢𝐬 𝐀𝐛𝐨𝐮𝐭 𝐋𝐢𝐧𝐞..!-🌸🖇️🍒\n\n♥︎╣[-🙂-]╠♥︎🌦️🐰🍭🍒𝙞 𝙬𝙖𝙣𝙩 𝙮𝙤𝙪 𝙛𝙤𝙧 𝙖 𝙬𝙝𝙞𝙡𝙚 𝙉𝙤𝙩 𝙛𝙤𝙧 𝙡𝙞𝙛𝙚—🐰✨-!<🌸🍓🌈🖇️-\n\n__ আমি তোমাকে চাই ক্ষনিকের জন্য নয় সারা জীবনের জন্য.🙂🌺🌼🌺__🐰✨\n\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n✢━━━━━━━━━━━━━━━",
+"= 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n✢━━━━━━━━━━━━━━━✢__𝐎𝐧𝐞 𝐬𝐢𝐝𝐞𝐝 𝐥𝐨𝐯𝐞 𝐢𝐬 𝐭𝐡𝐞 𝐦𝐨𝐬𝐭 𝐁𝐞𝐚𝐮𝐭𝐢𝐟𝐮𝐥 𝐟𝐞𝐞𝐥𝐢𝐧𝐠𝐬 𝐢𝐧 𝐭𝐡𝐞 𝐰𝐨𝐫𝐥𝐝!’🖇️🔐💜-!!<“)333\n\n🦋😊🥀:!”একতরফা ভালোবাসা পৃথিবীর সবচেয়ে সুন্দর অনুভূতি,!”)💔🦋🖇️🌈🍒-!!’~``\n\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]\n\n✢━━━━━━━━━━━━━━",
+"= 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n\n\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n✢━━━━━━━━━━━━━━━✢🦋🍒 𝑻𝒉𝒊𝒔 𝑨𝒃𝒐𝒖𝒕 𝑳𝒊𝒏𝒆 ~••🌋\n\n\n__۵ღ❥ ︵💚\n✨🤍🍒আবেগ শূন্য নগরীতে নিঃশ্বা",
+‎  ];
+‎  return quotes[Math.floor(Math.random() * quotes.length)];
+‎}
+‎
+‎
+‎function getRandomImageURL() {
+‎  const images = [
+‎    "https://files.catbox.moe/g1arom.jpg",
+‎ "https://files.catbox.moe/rjbof1.jpg",
+‎"https://files.catbox.moe/i26z86.jpg",
+‎"https://files.catbox.moe/yzdrl3.jpg",
+‎"https://files.catbox.moe/aa88km.jpg",
+‎"https://files.catbox.moe/3cngit.jpg",
+‎"https://files.catbox.moe/ou5mfp.jpg",
+‎"https://files.catbox.moe/gm3v5h.jpg",
+‎"https://files.catbox.moe/71px2i.jpg",
+‎"https://files.catbox.moe/o6keug.jpg",
+‎"https://files.catbox.moe/3g0ygr.jpg",
+‎"https://files.catbox.moe/wvo6ky.jpg",
+‎"https://files.catbox.moe/u0k7ow.jpg",
+‎"https://files.catbox.moe/uo517a.jpg",
+‎"https://files.catbox.moe/bdp1r8.jpg,
+‎  ];
+‎  return images[Math.floor(Math.random() * images.length)];
+‎}
+‎
+‎
+‎async function sendQuoteWithImage(api, event) {
+‎  const quote = getRandomQuote();
+‎  const imageUrl = getRandomImageURL();
+‎  const imgPath = path.join(__dirname, "cache", `start_img_${Date.now()}.jpg`);
+‎
+‎  fs.ensureDirSync(path.join(__dirname, "cache"));
+‎
+‎  await new Promise((resolve, reject) => {
+‎    request(imageUrl)
+‎      .pipe(fs.createWriteStream(imgPath))
+‎      .on("finish", resolve)
+‎      .on("error", reject);
+‎  });
+‎
+‎  api.sendMessage({
+‎    body: quote,
+‎    attachment: fs.createReadStream(imgPath)
+‎  }, event.threadID, () => fs.unlinkSync(imgPath))
