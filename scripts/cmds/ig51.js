@@ -1,10 +1,10 @@
-const fs = require("fs-extra");
-const request = require("request");
+/cmd install ig52.js const fs = require("fs-extra");
+const axios = require("axios");
 const path = require("path");
 
 module.exports = {
   config: {
-    name: "ig51",
+    name: "ig52",
     version: "1.3",
     author: "si52m",
     countDown: 5,
@@ -16,11 +16,11 @@ module.exports = {
     usePrefix: false
   },
 
-  onStart: async function ({ api, event }) {
+  onStart: async function({ api, event }) {
     return sendQuoteWithImage(api, event);
   },
 
-  onChat: async function ({ api, event }) {
+  onChat: async function({ api, event }) {
     const body = event.body?.toLowerCase().trim();
     if (body === "/") {
       return sendQuoteWithImage(api, event);
@@ -29,10 +29,10 @@ module.exports = {
 };
 
 // ================= QUOTES =================
-
 function getRandomQuote() {
   const quotes = [
-    "== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n✢━━━━━━━━━━━━━━━✢••🌼 𝐚𝐛𝐨𝐮𝐭 𝐭𝐡𝐢𝐬 𝐥𝐢𝐧𝐞,🙂🌿\n\n__🖤🦋দিন শেষে সূর্যটাও বুঝিয়ে দেয় সময় শেষ হলে স্থাঁন পরিবর্তন হয়..!!🥰💫🌼🦋\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n\n✢━━━━━━━━━━━━━━━✢",
+
+"== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n✢━━━━━━━━━━━━━━━✢••🌼 𝐚𝐛𝐨𝐮𝐭 𝐭𝐡𝐢𝐬 𝐥𝐢𝐧𝐞,🙂🌿\n\n__🖤🦋দিন শেষে সূর্যটাও বুঝিয়ে দেয় সময় শেষ হলে স্থাঁন পরিবর্তন হয়..!!🥰💫🌼🦋\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n\n✢━━━━━━━━━━━━━━━✢",
     "==== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n\n✢━━━━━━━━━━━━━━━✢༉༎🧸🍒𝗬𝗼𝘂 𝗺𝘂𝘀𝘁 𝗯𝗲 𝗹𝗶𝗸𝗲 𝘁𝗵𝗲 90𝘀 𝗶𝗻 𝘁𝗵𝗲 𝗰𝗿𝗼𝘄𝗱 𝗼𝗳 𝘁𝗵𝗶𝘂𝘀𝗮𝗻𝗱𝘀 𝗼𝗳 𝗽𝗲𝗼𝗽𝗹𝗲 𝘄𝗵𝗼 𝘄𝗶𝗹𝗹 𝗸𝗲𝗲𝗽 𝗮𝗻 𝗲𝘆𝗲 𝗼𝗻 𝗺𝗲-)🩷🍒🐼✨🌈-!!\n\n_>!!..🖤🔐😽'তুমি'টা হতে হবে নব্বই দশকের মতো হাজার মানুষের ভিড়ে যার নজর থাকবে আমার দিকে>-/🙃🦋\n\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n\n✢━━━━━━━━━━━━━━━✢=",
 "=== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n\n✢━━━━━━━━━━━━━━━✢༉༎🧸🍒𝗬𝗼𝘂 𝗺𝘂𝘀𝘁 𝗯𝗲 𝗹𝗶𝗸𝗲 𝘁𝗵𝗲 90𝘀 𝗶𝗻 𝘁𝗵𝗲 𝗰𝗿𝗼𝘄𝗱 𝗼𝗳 𝘁𝗵𝗶𝘂𝘀𝗮𝗻𝗱𝘀 𝗼𝗳 𝗽𝗲𝗼𝗽𝗹𝗲 𝘄𝗵𝗼 𝘄𝗶𝗹𝗹 𝗸𝗲𝗲𝗽 𝗮𝗻 𝗲𝘆𝗲 𝗼𝗻 𝗺𝗲-)🩷🍒🐼✨🌈-!!\n\n_>!!..🖤🔐😽'তুমি'টা হতে হবে নব্বই দশকের মতো হাজার মানুষের ভিড়ে যার নজর থাকবে আমার দিকে>-/🙃🦋\n\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n\n✢━━━━━━━━━━━━━━━✢",
 "=== 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n\n✢━━━━━━━━━━━━━━━✢🪄!< 𝘿𝙤𝙣'𝙩 💝𝘽𝙚𝙇𝙡𝙚𝙫𝙀🌈🌠𝙞𝙉 𝙏𝙚𝙈𝙥𝙤𝙧𝘼𝙧𝙔 𝙏𝙝𝙄𝙣𝙂𝙨<\n\n_সম্পর্কটা কিছুদিনের হলেও🐰🍒\n\n_তাকে ছাড়া প্রতিটা মুহূর্ত খুব শূন্য লাগে! >)🌧️🖤-••🦋🌼\n\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n\n✢━━━━━━━━━━━━━━━✢",
@@ -45,57 +45,59 @@ function getRandomQuote() {
 "= 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n✢━━━━━━━━━━━━━━━✢😽🐰🌼-𝐓𝐡𝐢𝐬 𝐀𝐛𝐨𝐮𝐭 𝐋𝐢𝐧𝐞..!-🌸🖇️🍒\n\n♥︎╣[-🙂-]╠♥︎🌦️🐰🍭🍒𝙞 𝙬𝙖𝙣𝙩 𝙮𝙤𝙪 𝙛𝙤𝙧 𝙖 𝙬𝙝𝙞𝙡𝙚 𝙉𝙤𝙩 𝙛𝙤𝙧 𝙡𝙞𝙛𝙚—🐰✨-!<🌸🍓🌈🖇️-\n\n__ আমি তোমাকে চাই ক্ষনিকের জন্য নয় সারা জীবনের জন্য.🙂🌺🌼🌺__🐰✨\n\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]🌼\n\n✢━━━━━━━━━━━━━━━",
 "= 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n✢━━━━━━━━━━━━━━━✢__𝐎𝐧𝐞 𝐬𝐢𝐝𝐞𝐝 𝐥𝐨𝐯𝐞 𝐢𝐬 𝐭𝐡𝐞 𝐦𝐨𝐬𝐭 𝐁𝐞𝐚𝐮𝐭𝐢𝐟𝐮𝐥 𝐟𝐞𝐞𝐥𝐢𝐧𝐠𝐬 𝐢𝐧 𝐭𝐡𝐞 𝐰𝐨𝐫𝐥𝐝!’🖇️🔐💜-!!<“)333\n\n🦋😊🥀:!”একতরফা ভালোবাসা পৃথিবীর সবচেয়ে সুন্দর অনুভূতি,!”)💔🦋🖇️🌈🍒-!!’~``\n\n\n༊_۵༎-𝐂-𝐄-𝐎🩷⃝✨[𝐒𝐄𝐘𝐀𝐌]\n\n✢━━━━━━━━━━━━━━",
 "= 「𝗣𝗿𝗲𝗳𝗶𝘅 𝐄𝐯𝐞𝐧𝐭」 ===❕✨💫\n--❖🅂🄴🅈🄰🄼-🄱🄾🅃(✷‿✷)\n\n\n--❖--🤍👀(✷‿✷) 😽🌈🫧\n\n✢━━━━━━━━━━━━━━━✢🦋🍒 𝑻𝒉𝒊𝒔 𝑨𝒃𝒐𝒖𝒕 𝑳𝒊𝒏𝒆 ~••🌋\n\n\n__۵ღ❥ ︵💚\n✨🤍🍒আবেগ শূন্য নগরীতে নিঃশ্বা",
-  ];
-  return quotes[Math.floor(Math.random() * quotes.length)];
+
+
+    
+   ];  return quotes[Math.floor(Math.random() * quotes.length)];
 }
 
 // ================= IMAGES =================
-
 function getRandomImageURL() {
   const images = [
- "https://files.catbox.moe/g1arom.jpg",
-‎ "https://files.catbox.moe/rjbof1.jpg",
-‎"https://files.catbox.moe/i26z86.jpg",
-‎"https://files.catbox.moe/yzdrl3.jpg",
-‎"https://files.catbox.moe/aa88km.jpg",
-‎"https://files.catbox.moe/3cngit.jpg",
-‎"https://files.catbox.moe/ou5mfp.jpg",
-‎"https://files.catbox.moe/gm3v5h.jpg",
-‎"https://files.catbox.moe/71px2i.jpg",
-‎"https://files.catbox.moe/o6keug.jpg",
-‎"https://files.catbox.moe/3g0ygr.jpg",
-‎"https://files.catbox.moe/wvo6ky.jpg",
-‎"https://files.catbox.moe/u0k7ow.jpg",
-‎"https://files.catbox.moe/uo517a.jpg",
-‎"https://files.catbox.moe/bdp1r8.jpg",
-  ];
+  "https://files.catbox.moe/g1arom.jpg",
+  "https://files.catbox.moe/rjbof1.jpg",
+  "https://files.catbox.moe/i26z86.jpg",
+  "https://files.catbox.moe/yzdrl3.jpg",
+  "https://files.catbox.moe/aa88km.jpg",
+  "https://files.catbox.moe/3cngit.jpg",
+  "https://files.catbox.moe/ou5mfp.jpg",
+  "https://files.catbox.moe/gm3v5h.jpg",
+  "https://files.catbox.moe/71px2i.jpg",
+  "https://files.catbox.moe/o6keug.jpg",
+  "https://files.catbox.moe/3g0ygr.jpg",
+  "https://files.catbox.moe/wvo6ky.jpg",
+  "https://files.catbox.moe/u0k7ow.jpg",
+  "https://files.catbox.moe/uo517a.jpg",
+  "https://files.catbox.moe/bdp1r8.jpg"
+];
+    
+    
   return images[Math.floor(Math.random() * images.length)];
 }
 
 // ================= SEND FUNCTION =================
-
 async function sendQuoteWithImage(api, event) {
   const quote = getRandomQuote();
   const imageUrl = getRandomImageURL();
 
   const cacheDir = path.join(__dirname, "cache");
+  await fs.ensureDir(cacheDir);
+
   const imgPath = path.join(cacheDir, `ig_${Date.now()}.jpg`);
 
-  fs.ensureDirSync(cacheDir);
+  try {
+    const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
+    await fs.writeFile(imgPath, response.data);
 
-  await new Promise((resolve, reject) => {
-    request(imageUrl)
-      .pipe(fs.createWriteStream(imgPath))
-      .on("finish", resolve)
-      .on("error", reject);
-  });
-
-  api.sendMessage(
-    {
-      body: quote,
-      attachment: fs.createReadStream(imgPath)
-    },
-    event.threadID,
-    () => fs.unlinkSync(imgPath)
-  );
+    api.sendMessage(
+      { body: quote, attachment: fs.createReadStream(imgPath) },
+      event.threadID,
+      () => {
+        try { fs.unlinkSync(imgPath); } catch (e) {}
+      }
+    );
+  } catch (err) {
+    console.error("Error sending image:", err);
+    api.sendMessage("দুঃখিত! ছবি পাঠানো সম্ভব হয়নি।", event.threadID);
+  }
 }
