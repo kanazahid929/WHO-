@@ -1,8 +1,8 @@
 module.exports = {
 	config: {
 		name: "kick",
-		version: "1.3",
-		author: "NTKhang",
+		version: "1.6",
+		author: "NTKhang + edit by Siyam",
 		countDown: 5,
 		role: 1,
 		description: {
@@ -11,8 +11,8 @@ module.exports = {
 		},
 		category: "box chat",
 		guide: {
-			vi: "   {pn} @tags: dùng để kick những người được tag",
-			en: "   {pn} @tags: use to kick members who are tagged"
+			vi: "   {pn} @tags | kick all",
+			en: "   {pn} @tags | kick all"
 		}
 	},
 
@@ -25,32 +25,48 @@ module.exports = {
 		}
 	},
 
-	onStart: async function ({ message, event, args, threadsData, api, getLang }) {
-		const adminIDs = await threadsData.get(event.threadID, "adminIDs");
-		if (!adminIDs.includes(api.getCurrentUserID()))
-			return message.reply(getLang("needAdmin"));
-		async function kickAndCheckError(uid) {
+	onStart: async function ({ message, event, args, api, getLang }) {
+
+		const botID = api.getCurrentUserID();
+
+		// 🔥 BOT ADMIN LIST (real bot admins)
+		const botAdmins = global.GoatBot?.config?.adminBot || [];
+
+		async function kick(uid) {
 			try {
 				await api.removeUserFromGroup(uid, event.threadID);
-			}
-			catch (e) {
-				message.reply(getLang("needAdmin"));
-				return "ERROR";
-			}
+			} catch (e) {}
 		}
+
+		// 🔥 kick all (BOT + BOT ADMINS SAFE)
+		if (args[0] && args[0].toLowerCase() === "all") {
+			const threadInfo = await api.getThreadInfo(event.threadID);
+
+			for (const uid of threadInfo.participantIDs) {
+
+				// ❌ bot kick হবে না
+				if (uid === botID) continue;
+
+				// ❌ bot admin kick হবে না
+				if (botAdmins.includes(uid)) continue;
+
+				await kick(uid);
+			}
+			return;
+		}
+
+		// normal kick
 		if (!args[0]) {
 			if (!event.messageReply)
 				return message.SyntaxError();
-			await kickAndCheckError(event.messageReply.senderID);
-		}
-		else {
+			await kick(event.messageReply.senderID);
+		} else {
 			const uids = Object.keys(event.mentions);
 			if (uids.length === 0)
 				return message.SyntaxError();
-			if (await kickAndCheckError(uids.shift()) === "ERROR")
-				return;
+
 			for (const uid of uids)
-				api.removeUserFromGroup(uid, event.threadID);
+				await kick(uid);
 		}
 	}
 };
