@@ -24,7 +24,7 @@ module.exports = {
       fs.mkdirSync(dirMaterial, { recursive: true });
 
     if (!fs.existsSync(imgPath)) {
-      const res = await axios.get("https://i.ibb.co/TW9Kbwr/images-2022-08-14-T183542-356.jpg", { responseType: "arraybuffer" });
+      const res = await axios.get("https://files.catbox.moe/z32436.jpg", { responseType: "arraybuffer" });
       fs.writeFileSync(imgPath, res.data);
     }
   },
