@@ -24,7 +24,7 @@ module.exports = {
         const text = body.replace(/\s+/g, "");
 
         // Trigger emojis
-        const triggers = ["💥", "💤", "😓"];
+        const triggers = ["💤", "💤", "😓"];
 
         // Check if the whole message is exactly one of the triggers
         if (triggers.includes(text)) {
