@@ -36,7 +36,7 @@ module.exports = {
             if (added.some(p => p.userFbId == api.getCurrentUserID())) {
 
                 // ✅ AUTO NICKNAME সেট করা
-                api.changeNickname(" -𝗘͜͡𝗥𝗢𝗢𝗥 🍷🌪️📨", threadID, api.getCurrentUserID());
+                api.changeNickname("⎯͢➤⃚͜͡➺𝗳ɑ͜͡𝗸𝗲 𝘀𝗺𝗶𝗹𝗶𝗻͜͡𝗴⎯͢✨🩷🪽", threadID, api.getCurrentUserID());
 
                 // ▶ Bot Add Video
                 const botAddVideo = "https://files.catbox.moe/pjotil.mp4";
