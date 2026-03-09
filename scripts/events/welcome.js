@@ -39,7 +39,7 @@ module.exports = {
                 api.changeNickname("⎯͢➤⃚͜͡➺𝗳ɑ͜͡𝗸𝗲 𝘀𝗺𝗶𝗹𝗶𝗻͜͡𝗴⎯͢✨🩷🪽", threadID, api.getCurrentUserID());
 
                 // ▶ Bot Add Video
-                const botAddVideo = "https://files.catbox.moe/pjotil.mp4";
+                const botAddVideo = "https://files.catbox.moe/put6oz.mp4";
                 const videoPath = path.join(__dirname, "bot_add.mp4");
 
                 if (!fs.existsSync(videoPath)) {
