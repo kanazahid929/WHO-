@@ -15,7 +15,7 @@ module.exports = {
     en: {
       setSuccess: "𝗟𝗢𝗔𝗗𝗜𝗡𝗚 . . . ...\n👾🔥😈 𝗩𝗜͟𝗣 𝗝͟3-/// 𝗔͟𝗖͟͠𝗧𝗜͟͠𝗩𝗘𝗗📨💀⚡\n▓▓▓▓▓░░░░░ 99% {name} in this group 👾",
       offSuccess: "𝗩͟𝗜͟͠𝗣 𝗝͟3-/// 𝗢͟𝗙͟͠𝗙 👾 {name} in this group 📨😈",
-      noMention: "__\\👾সিয়াম বস একবার খানকির পোলারে ম্যানশন দেন ওর মার ভো🎯দা খুলে ফেলব চু-/দে !! 😈📨",
+      noMention: "__\\ ariyan বস একবার খানকির পোলারে ম্যানশন দেন ওর মার ভো🎯দা খুলে ফেলব চু-/দে !! 😈📨",
       notActive: "{name} er jonno bully mode on chilo na. 🤔"
     }
   },
