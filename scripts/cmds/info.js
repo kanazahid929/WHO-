@@ -1,7 +1,3 @@
-const axios = require("axios");
-const fs = require("fs");
-const path = require("path");
-
 module.exports = {
   config: {
     name: "info",
@@ -13,32 +9,20 @@ module.exports = {
     guide: "{pn}"
   },
 
-  onStart: async () => {},
-
-  onChat: async function ({ api, event }) {
+  onStart: async function ({ api, event }) {
     try {
-      // NO PREFIX TRIGGER
-      if (event.body?.toLowerCase() !== "info") return;
-
-      const imageUrl = "https://files.catbox.moe/4qc08p.jpg";
-      const imgPath = path.join(__dirname, "info.jpg");
-
-      // Download image and save
-      const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
-      fs.writeFileSync(imgPath, Buffer.from(response.data));
-
       const message = `
 ╭─━━━❖🫧❖━━━─╮
 👾 𝗩͟𝗜͟͠𝗥𝗨𝗦  𝗔͟𝗟͟͠𝗘𝗥𝗧
 ╰─━━━❖🫧❖━━━─╯
 
-- 𝗡𝗔͜͡𝗠𝗘       :    - 𝗦𝗜͜͡𝗬𝗔𝗠  🎭
+- 𝗡𝗔͜͡𝗠𝗘       :    - ARIYAN 🎭
 - 𝗚𝗘͜͡𝗡𝗗𝗘𝗥        : -𝗠𝗔͜͡𝗟𝗘  ⚡       
 - 𝗥𝗘͜͡𝗟𝗔𝗧𝗜𝗢𝗡𝗦𝗛𝗜𝗣 :  - 𝗦𝗜͜͡𝗡𝗚𝗟𝗘  🪄  
-🍷 𝗔͜͡𝗚𝗘            : 𝟭𝟵  🥂  
+🍷 𝗔͜͡𝗚𝗘            : 21+ 🥂  
 💝 𝗥𝗘͜͡𝗟𝗜𝗚𝗜𝗢𝗡 : 𝗜𝗦͜͡𝗟𝗔𝗠  
-   𝗔͜͡𝗗𝗗𝗥𝗘𝗦𝗦       : 𝗦𝗔͜͡𝗧𝗞𝗛𝗜𝗥𝗔  🍷☠️  
- - 𝗙𝗔͜͡𝗖𝗘𝗕𝗢𝗢𝗞  : 🪄https://www.facebook.com/100000491671361
+
+ - 𝗙𝗔͜͡𝗖𝗘𝗕𝗢𝗢𝗞  : 🪄 https://www.facebook.com/profile.php?id=100000517657400
 
 🎯🪄⚡
 
@@ -48,23 +32,20 @@ module.exports = {
 🧠 𝗖𝗢͜͡𝗠𝗠𝗔𝗡𝗗𝗦 :  𝟰𝟰𝟰☠️
 👑 𝗦𝗢͜͡𝗠𝗘𝗧𝗛𝗜𝗡𝗚 𝗘𝗟𝗦𝗘   : 🍷👑
 
+
 ───────────────────────────`;
 
-      await api.sendMessage(
-        {
-          body: message,
-          attachment: fs.createReadStream(imgPath)
-        },
-        event.threadID,
-        event.messageID
-      );
+      await api.sendMessage({
+        body: message
+      }, event.threadID, event.messageID);
 
-      // React on trigger message
-      api.setMessageReaction("🖤", event.messageID, () => {}, true);
+      if (event.body.toLowerCase().includes('ownerinfo')) {
+        api.setMessageReaction('🖤', event.messageID, (err) => {}, true);
+      }
 
-    } catch (e) {
-      console.error(e);
-      api.sendMessage("Something went wrong!", event.threadID);
+    } catch (error) {
+      console.error('Error in ownerinfo command:', error);
+      return api.sendMessage('Something went wrong while processing the command.', event.threadID);
     }
-  }
+  },
 };
